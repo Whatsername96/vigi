@@ -1,14 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Platform, NativeModules, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import markerAssalto from './src/images/assalto/assalto.png';
 
 import  Header  from './src/components/Header';
 import { useFonts, Abel_400Regular } from '@expo-google-fonts/abel';
-/*
-const { StatusBarManager } = NativeModules;
-const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
-*/
+
 export default function App() {
 
 const [fontsLoaded] = useFonts({

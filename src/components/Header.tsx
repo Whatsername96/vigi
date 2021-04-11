@@ -27,13 +27,12 @@ export default function Header({ title }: HeaderProps) {
                 } />
                 <Text style={styles.title}>{title}</Text>
             </View>
-            
+
             <TouchableOpacity>
                 <Image source={
                 require('../images/header/emergencia.png')
             } />
             </TouchableOpacity>
-            
         </View>
     )
 }

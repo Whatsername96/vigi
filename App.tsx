@@ -1,23 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Platform, NativeModules, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, StatusBar, Image } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
-import markerAssalto from './src/images/assalto/assalto.png';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-import  Header  from './src/components/Header';
+import markerAssalto from './src/images/assalto/assalto.png';
+import Header from './src/components/Header';
 import { useFonts, Abel_400Regular } from '@expo-google-fonts/abel';
-/*
-const { StatusBarManager } = NativeModules;
-const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
-*/
+
 export default function App() {
 
-const [fontsLoaded] = useFonts({
-  Abel_400Regular,
-});
+  const [fontsLoaded] = useFonts({
+    Abel_400Regular,
+  });
 
-if(!fontsLoaded) {
-  return null;
-}
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -28,17 +26,6 @@ if(!fontsLoaded) {
         backgroundColor="#394867"
         translucent={false}
       />
-
-      <Header
-        title={'Vigi'}
-      />
-
-      <TouchableOpacity style={styles.pesquisar} onPress={() => { }}>
-        <Text>Pesquisar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.denunciar} onPress={() => { }}>
-        <Text>Denunciar</Text>
-      </TouchableOpacity>
 
       <MapView
         provider={PROVIDER_GOOGLE}
@@ -65,7 +52,65 @@ if(!fontsLoaded) {
           </Callout>
         </Marker>
       </MapView>
+
+      <Header
+        title={'Vigi'}
+      />
+
+      <View style={styles.inputLocationView}>
+        <GooglePlacesAutocomplete
+          placeholder='Digite o local'
+
+          textInputProps={{
+            placeholderTextColor: '#B4B3B3',
+          }}
+
+          styles={{
+            textInput: {
+              textAlign: 'left',
+              fontSize: 20,
+              fontFamily: 'Abel_400Regular',
+              color: '#000',
+            }
+          }}
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+          }}
+          query={{
+            key: 'YOUR API KEY',
+            language: 'pt',
+          }}
+          fetchDetails
+          enablePoweredByContainer={false}
+        />
+
+        <TouchableOpacity onPress={() => alert('funcionando')}>
+          <Image source={
+            require('./src/images/input/local-usuario.png')
+          } />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.containerButtons}>
+        <TouchableOpacity style={styles.btnSearch} onPress={() => alert('funcionando')}>
+          <Text style={styles.btnText}>Consultar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.btnDenounce} onPress={() => alert('funcionando')}>
+          <Text style={styles.btnText}>Denunciar</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.containerInfo}>
+        <TouchableOpacity onPress={() => alert('funcionando')}>
+          <Image source={
+            require('./src/images/header/info.png')
+          } />
+        </TouchableOpacity>
+      </View>
     </View>
+
   );
 }
 
@@ -77,30 +122,63 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  localizacao: {
-
+  inputLocationView: {
+    position: 'absolute',
+    flex: 1,
+    width: '90%',
+    height: 60,
+    backgroundColor: '#FFF',
+    borderRadius: 6,
+    elevation: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignItems: 'center',
+    top: 70,
+    margin: 10,
+    flexDirection: 'row',
+    paddingVertical: 10,
+    justifyContent: 'space-between',
   },
 
-  pesquisar: {
-    width: 50,
-    height: 20,
+  containerButtons: {
+    position: 'absolute',
     flex: 1,
-    backgroundColor: '#394867'
+    top: 140,
+    flexDirection: 'row',
+    width: '90%',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
 
-  denunciar: {
-    width: 50,
-    height: 10,
-    flex: 1,
-    left: 10,
-    right: 10,
+  btnSearch: {
+    width: '40%',
+    height: 44,
+    backgroundColor: '#394867',
+    borderRadius: 6,
+    justifyContent: 'center',
+    elevation: 5,
+  },
+
+  btnDenounce: {
+    width: '40%',
+    height: 44,
+    backgroundColor: '#000',
+    borderRadius: 6,
+    justifyContent: 'center',
+    elevation: 5,
+  },
+
+  btnText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: 'Abel_400Regular',
+    color: '#FFF',
   },
 
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    bottom: 0,
-    position: 'relative'
+    width: Dimensions.get('screen').width,
+    height: '100%',
+    position: 'relative',
   },
 
   calloutContainer: {
@@ -124,6 +202,11 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 12,
     textAlign: 'center',
-  }
+  },
 
+  containerInfo: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10
+  }
 });

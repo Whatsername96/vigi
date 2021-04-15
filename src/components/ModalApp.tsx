@@ -4,10 +4,10 @@ import { StyleSheet, Text, View, Modal, Image, Pressable } from 'react-native';
 interface ModalAppProps {
   show: boolean;
   close: Function;
-  showTitle: boolean;
-  title: string;
-  showDescription: boolean;
-  description: string;
+  //showTitle: boolean;
+  title?: string;
+  //showDescription: boolean;
+  description?: string;
   imgSuccess: boolean;
   imgError: boolean;
   btnBack: boolean;
@@ -17,9 +17,9 @@ interface ModalAppProps {
 export default function AppModal({ 
   show, 
   close, 
-  showTitle, 
+  //showTitle, 
   title, 
-  showDescription, 
+  //showDescription, 
   description, 
   imgSuccess, 
   imgError, 
@@ -47,8 +47,8 @@ export default function AppModal({
             <View style={styles.modalView}> 
             {imgSuccess && <Image style={styles.modalImage} source={require('../images/modal-images/sucesso.png')}  />}
             {imgError && <Image style={styles.modalImage} source={require('../images/modal-images/erro.png')} /> }
-            {showTitle && <Text style={styles.modalTitle}>{title}</Text> }
-            {showDescription && <Text style={styles.modalText}>{description}</Text>} 
+            {title && <Text style={styles.modalTitle}>{title}</Text> }
+            {description && <Text style={styles.modalText}>{description}</Text>} 
               <Pressable
                 style={styles.modalButton}
                 onPress={() => {close(!modal); { }}} //colocar função para alterar a tela aqui -> route

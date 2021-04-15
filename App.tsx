@@ -112,7 +112,17 @@ export default function App() {
           } />
         </TouchableOpacity>
       </View>
-        <ModalApp show={modal} close={() => setModal(false)}/>
+        <ModalApp show={modal} 
+        close={() => setModal(false)} 
+        showTitle={true}
+        title={'Informações'} 
+        showDescription={true}
+        description={'Cada denúncia ficará disponível por 15 dias.'}
+        imgSuccess={false}
+        imgError={false}
+        btnBack={false}
+        route={''}
+        />
     </View>
 
   );

@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, StyleSheet, Text, View, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Modal, Image, Pressable } from 'react-native';
 
 interface ModalAppProps {
   show: boolean;
   close: Function;
+  showTitle: boolean;
+  title: string;
+  showDescription: boolean;
+  description: string;
+  imgSuccess: boolean;
+  imgError: boolean;
+  btnBack: boolean;
+  route: string;
 }
 
-export default function AppModal({ show, close }: ModalAppProps) {
+export default function AppModal({ 
+  show, 
+  close, 
+  showTitle, 
+  title, 
+  showDescription, 
+  description, 
+  imgSuccess, 
+  imgError, 
+  btnBack,
+  route}: 
+  ModalAppProps) {
+
   const [modal, setModal] = useState(false);
+
     useEffect(() => {
       setModal(show);
      }, [show]);
@@ -23,15 +44,25 @@ export default function AppModal({ show, close }: ModalAppProps) {
           }}
         >
           <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalTitle}>Informações</Text>
-              <Text style={styles.modalText}>Cada denúncia ficará disponível por 15 dias.</Text>
+            <View style={styles.modalView}> 
+            {imgSuccess && <Image style={styles.modalImage} source={require('../images/modal-images/sucesso.png')}  />}
+            {imgError && <Image style={styles.modalImage} source={require('../images/modal-images/erro.png')} /> }
+            {showTitle && <Text style={styles.modalTitle}>{title}</Text> }
+            {showDescription && <Text style={styles.modalText}>{description}</Text>} 
               <Pressable
                 style={styles.modalButton}
-                onPress={() => close(!modal)}
+                onPress={() => {close(!modal); { }}} //colocar função para alterar a tela aqui -> route
               >
-                <Text style={styles.modalButtonText}>Fechar</Text>
+                <Text style={styles.modalButtonText}>Ok</Text>
               </Pressable>
+              
+                {btnBack && <Pressable
+                style={styles.modalButton}
+                onPress={() => close(!modal)}
+                >
+                <Text style={styles.modalButtonText}>Voltar</Text>
+                </Pressable> }
+              
             </View>
           </View>
         </Modal>
@@ -55,16 +86,14 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         padding: 30,
         alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
       },
     
+      modalImage: {
+        marginBottom: 20,
+        marginLeft: 20,
+        marginRight: 20,
+      },
+
       modalTitle: {
         marginBottom: 10,
         textAlign: "center",
@@ -90,6 +119,7 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 10,
       },
     
       modalButtonText: {
@@ -97,5 +127,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Abel_400Regular',
         fontSize: 18,
-      }
+      },
 })

@@ -49,6 +49,7 @@ export default function AppModal({
             {imgError && <Image style={styles.modalImage} source={require('../images/modal-images/erro.png')} /> }
             {title && <Text style={styles.modalTitle}>{title}</Text> }
             {description && <Text style={styles.modalText}>{description}</Text>} 
+              
               <Pressable
                 style={styles.modalButton}
                 onPress={() => {close(!modal); { }}} //colocar função para alterar a tela aqui -> route

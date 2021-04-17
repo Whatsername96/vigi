@@ -22,7 +22,6 @@ export default function MapaDelitos() {
             setErrorMessage('Permissão negada, não é possível mostrar a localização');
            
         } else {
-            console.log('chegou aqui else.')
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
             const { latitude , longitude } = location.coords
             let endereco = Location.reverseGeocodeAsync( {latitude, longitude} )
@@ -76,6 +75,8 @@ return (
                 placeholder='Digite o local'
                 textInputProps={{
                     placeholderTextColor: '#B4B3B3',
+                    autoCapitalize: 'none',
+                    autoCorrect: false
                 }}
 
                 styles={{
@@ -91,7 +92,7 @@ return (
                     console.log(data, details);
                 }}
                 query={{
-                    key: 'YOUR API KEY',
+                    key: 'AIzaSyA0xTg_GdZYduvRXjL2nYgvUz2bGYkgwjc',
                     language: 'pt',
                 }}
                 fetchDetails

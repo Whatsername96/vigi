@@ -17,7 +17,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "O aplicativo irá mostrar sua localização"
+    }
     },
     "android": {
       "adaptiveIcon": {

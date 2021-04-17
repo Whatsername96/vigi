@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions, StatusBar, Image } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
 import * as Location from 'expo-location';
 import * as Permission from 'expo-permissions';
 
@@ -12,27 +11,28 @@ import { RectButton } from 'react-native-gesture-handler';
 
 export default function MapaDelitos() {
     const [modal, setModal] = useState(false);
-    const [latitude, setLatitude] = useState(0);
-    const [longitude, setLongitude] = useState(0);
+    const [latitude, setLatitude] = useState(-30.0332291);
+    const [longitude, setLongitude] = useState(-51.2301877);
     const [errorMessage, setErrorMessage] = useState('');
 
 
-    async function getLocationAsync(){
-    let  status  = Location.getPermissionsAsync();
-    if (((await status).ios?.scope !== 'whenInUse' && (await status).ios?.scope !=='always') || 
-    ((await status).android?.scope !== 'fine' && (await status).android?.scope !=='coarse')){
-        setErrorMessage('Permissão negada');
+    async function getLocationAsync() {
+        let status = Permission.askAsync(Permission.LOCATION);
+        if ((await status).status !== 'granted') {
+            setErrorMessage('Permissão negada, não é possível mostrar a localização');
+           
+        } else {
+            console.log('chegou aqui else.')
+            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
+            const { latitude , longitude } = location.coords
+            let endereco = Location.reverseGeocodeAsync( {latitude, longitude} )
+            setLongitude(longitude);
+            setLatitude(latitude);
+        }
     }
-    
-    let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Highest});
-    const { latitude , longitude } = location.coords;
-    setLatitude(latitude);
-    setLongitude(longitude);
-  };
 
-  getLocationAsync()
-console.log(longitude);
-console.log(latitude);
+    getLocationAsync();
+
 return (
     <View style={styles.container}>
 
@@ -44,11 +44,13 @@ return (
         />
 
         <MapView
+            showsUserLocation={true}
+            followsUserLocation={true}
             provider={PROVIDER_GOOGLE}
             style={styles.map}
-            initialRegion={{
-                latitude: -30.0332291,
-                longitude: -51.2301877,
+            region={{
+                latitude: latitude,
+                longitude: longitude,
                 latitudeDelta: 0.002,
                 longitudeDelta: 0.002,
             }}
@@ -56,8 +58,8 @@ return (
             <Marker
                 icon={markerAssalto}
                 coordinate={{
-                    latitude: -30.0332291,
-                    longitude: -51.2301877,
+                    latitude: latitude,
+                    longitude: longitude,
                 }}
             >
                 <Callout tooltip={true}>
@@ -96,7 +98,7 @@ return (
                 enablePoweredByContainer={false}
             />
 
-            <RectButton onPress={() => alert('funcionando')}>
+            <RectButton onPress={() => getLocationAsync()}>
                 <Image source={
                     require('../images/input/local-usuario.png')
                 } />

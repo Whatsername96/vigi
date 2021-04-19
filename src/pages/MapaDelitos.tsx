@@ -92,11 +92,12 @@ return (
                     console.log(data, details);
                 }}
                 query={{
-                    key: 'AIzaSyA0xTg_GdZYduvRXjL2nYgvUz2bGYkgwjc',
+                    key: 'key',
                     language: 'pt',
                 }}
                 fetchDetails
                 enablePoweredByContainer={false}
+                onFail={error => console.error(error)}
             />
 
             <RectButton onPress={() => getLocationAsync()}>

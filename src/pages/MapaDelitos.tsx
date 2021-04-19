@@ -101,7 +101,7 @@ export default function MapaDelitos() {
                         paddingTop: 0,
                         paddingBottom: 0,
                         paddingLeft: 20,
-                        paddingRight: 20,
+                        paddingRight: 52,
                         padding: 0,
                         elevation: 5,
                         shadowColor: '#000',
@@ -205,6 +205,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'flex-end',
+        zIndex: 1,
+        backgroundColor: '#FFF',
     },
 
     containerButtons: {

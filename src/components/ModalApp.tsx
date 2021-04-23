@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Modal, Image, Pressable, Dimensions } from 'react-native';
 
 interface ModalAppProps {
   show: boolean;
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#000",
         fontFamily: 'Abel_400Regular',
-        fontSize: 20,
+        fontSize: 24,
       },
     
       modalText: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#000",
         fontFamily: 'Abel_400Regular',
-        fontSize: 18,
+        fontSize: 20,
       },
     
       modalButton: {
@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
         fontFamily: 'Abel_400Regular',
-        fontSize: 18,
+        fontSize: 20,
       },
 })

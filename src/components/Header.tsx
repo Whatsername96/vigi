@@ -1,7 +1,7 @@
 import React from 'react';
 //import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
-import { StyleSheet, Text, View, Image, NativeModules, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, NativeModules, Platform, Dimensions, StatusBar } from 'react-native';
 
 import Back from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -20,7 +20,6 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
     const navigation = useNavigation();
 
     function handleNavigateToEmergencia() {
-        console.log('chegou aqui')
         navigation.navigate('Emergencia');
     }
 
@@ -28,18 +27,27 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
 
         <View style={styles.container}>
 
+
+            <StatusBar
+                barStyle="light-content"
+                hidden={false}
+                backgroundColor="#394867"
+                translucent={false}
+            />
+
             {showBack &&
                 <BorderlessButton onPress={() => { navigation.goBack() }}>
                     <Back name="chevron-left" size={40} color="#FFF" />
                 </BorderlessButton>
             }
 
-            {!showBack && <View 
-                                style={{ 
-                                    backgroundColor: 'transparent', 
-                                    height: 40, 
-                                    width: 40 }} 
-                                    />
+            {!showBack && <View
+                style={{
+                    backgroundColor: 'transparent',
+                    height: 40,
+                    width: 40
+                }}
+            />
             }
 
             <View style={styles.containerLogo}>
@@ -56,14 +64,14 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
                 </BorderlessButton>
             }
 
-            {!showEmergency && <View 
-                                    style={{ 
-                                        backgroundColor: 'transparent', 
-                                        height: 40, 
-                                        width: 40 }} 
-                                />
+            {!showEmergency && <View
+                style={{
+                    backgroundColor: 'transparent',
+                    height: 40,
+                    width: 40
+                }}
+            />
             }
-
         </View>
     )
 }
@@ -71,7 +79,7 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        width: '100%',
+        width: Dimensions.get('window').width,
         top: 0,
         backgroundColor: '#394867',
         borderBottomWidth: 1,

@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, StatusBar, Image } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { RectButton } from 'react-native-gesture-handler';
+
 import * as Location from 'expo-location';
 import * as Permission from 'expo-permissions';
 
+import config from '../../config/index.json';
 import markerAssalto from '../images/assalto/assalto.png';
 import ModalApp from '../components/ModalApp'
-import { RectButton } from 'react-native-gesture-handler';
+
 
 export default function MapaDelitos() {
     const [modal, setModal] = useState(false);
-    const [latitude, setLatitude] = useState(-30.0332291);
-    const [longitude, setLongitude] = useState(-51.2301877);
+    const [latitude, setLatitude] = useState(-30.084736);
+    const [longitude, setLongitude] = useState(-51.2348599);
     const [errorMessage, setErrorMessage] = useState('');
-
+    const [endereco, setEndereco] = useState('');
+    const [coordsLat, setCoordsLat] = useState(0);
+    const [coordsLng, setCoordsLng] = useState(0);
 
     async function getLocationAsync() {
         let status = Permission.askAsync(Permission.LOCATION);
@@ -22,25 +27,24 @@ export default function MapaDelitos() {
             setErrorMessage('Permissão negada, não é possível mostrar a localização');
 
         } else {
+            console.log('chegou aqui: local usuário')
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
             const { latitude, longitude } = location.coords
-            let endereco = Location.reverseGeocodeAsync({ latitude, longitude })
+            //let endereco = Location.reverseGeocodeAsync({ latitude, longitude })
             setLongitude(longitude);
             setLatitude(latitude);
         }
     }
 
-    getLocationAsync();
+    function consultarLocalizacao(latitude: number, longitude: number){
+        if(latitude !== 0 && longitude !== 0){
+            setLatitude(latitude);
+            setLongitude(longitude);
+        }
+    }
 
     return (
         <View style={styles.container}>
-
-            <StatusBar
-                barStyle="light-content"
-                hidden={false}
-                backgroundColor="#394867"
-                translucent={false}
-            />
 
             <MapView
                 showsUserLocation={true}
@@ -140,17 +144,19 @@ export default function MapaDelitos() {
                 }}
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
-                    console.log(data, details);
+                    setEndereco(data.description);
+                    setCoordsLat(details?.geometry.location.lat ?? 0);
+                    setCoordsLng(details?.geometry.location.lng ?? 0);
                 }}
                 query={{
-                    key: 'my-key',
-                    language: 'pt',
+                    key: config.googleApi,
+                    language: 'pt-br',
                 }}
                 fetchDetails
                 enablePoweredByContainer={false}
                 onFail={error => console.error(error)}
             />
-            <View style={styles.viewLocalUsuario}>
+            <View style={styles.viewLocationUser}>
                 <RectButton onPress={() => getLocationAsync()}>
                     <Image source={
                         require('../images/input/local-usuario.png')
@@ -159,7 +165,7 @@ export default function MapaDelitos() {
             </View>
 
             <View style={styles.containerButtons}>
-                <RectButton style={styles.btnSearch} onPress={() => alert('funcionando')}>
+                <RectButton style={styles.btnSearch} onPress={() => {consultarLocalizacao(coordsLat, coordsLng)}}>
                     <Text style={styles.btnText}>Consultar</Text>
                 </RectButton>
 
@@ -196,7 +202,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    viewLocalUsuario: {
+    viewLocationUser: {
         position: 'absolute',
         top: 0,
         marginTop: 25,

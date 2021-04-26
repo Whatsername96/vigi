@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
-        backgroundColor: '#FFF',
+        backgroundColor: '#EFEEEE',
         flex: 1,
         flexDirection: 'column',
     },

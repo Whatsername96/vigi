@@ -1,47 +1,71 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import React, { useState} from 'react';
+import { StyleSheet, Text, View, Dimensions, Image, ToastAndroid } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { RectButton } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 import * as Location from 'expo-location';
 import * as Permission from 'expo-permissions';
 
 import config from '../../config/index.json';
 import markerAssalto from '../images/assalto/assalto.png';
-import ModalApp from '../components/ModalApp'
+import ModalApp from '../components/ModalApp';
 
-
-export default function MapaDelitos() {
+export default function MapaDelitos() {                   
     const [modal, setModal] = useState(false);
     const [latitude, setLatitude] = useState(-30.084736);
     const [longitude, setLongitude] = useState(-51.2348599);
     const [errorMessage, setErrorMessage] = useState('');
-    const [endereco, setEndereco] = useState('');
+    const [endereco, setEndereco] = useState(Object);
     const [coordsLat, setCoordsLat] = useState(0);
     const [coordsLng, setCoordsLng] = useState(0);
+    const navigation = useNavigation();
+
+    //Pega url e busca no mapa os locais
+    //fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=' + 1000 + '&type=police' + '&key=' + config.googleApi).then((response) =>{    
+    //    return response.json();
+    //}).then(response => console.log(response));
+
 
     async function getLocationAsync() {
         let status = Permission.askAsync(Permission.LOCATION);
         if ((await status).status !== 'granted') {
             setErrorMessage('Permissão negada, não é possível mostrar a localização');
+            return ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
 
         } else {
-            console.log('chegou aqui: local usuário')
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
             const { latitude, longitude } = location.coords
-            //let endereco = Location.reverseGeocodeAsync({ latitude, longitude })
+            setEndereco(Location.reverseGeocodeAsync({ latitude, longitude }));
             setLongitude(longitude);
             setLatitude(latitude);
         }
     }
 
-    function consultarLocalizacao(latitude: number, longitude: number){
-        if(latitude !== 0 && longitude !== 0){
+    function consultarLocalizacao(latitude: number, longitude: number) {
+        if (latitude !== 0 && longitude !== 0) {
             setLatitude(latitude);
             setLongitude(longitude);
         }
     }
+
+        function handleNavigateToDenunciar(latitude: number, longitude: number, endereco: string) {
+            if (latitude == 0 && longitude == 0 && endereco == '') {
+                setErrorMessage('Digite o local da denúncia na caixa de texto');
+                return ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+            } else {
+                navigation.navigate("Denunciar",
+                    {
+                        params: {
+                            endereco: endereco,
+                            lat: coordsLat,
+                            lng: coordsLng
+                        }
+                    }
+                )
+            }
+        }
 
     return (
         <View style={styles.container}>
@@ -75,6 +99,7 @@ export default function MapaDelitos() {
             </MapView>
 
             <GooglePlacesAutocomplete
+                ref={() => {'Local'}}
                 placeholder='Digite o local'
                 textInputProps={{
                     placeholderTextColor: '#B4B3B3',
@@ -147,13 +172,23 @@ export default function MapaDelitos() {
                     setEndereco(data.description);
                     setCoordsLat(details?.geometry.location.lat ?? 0);
                     setCoordsLng(details?.geometry.location.lng ?? 0);
+                    
                 }}
                 query={{
                     key: config.googleApi,
-                    language: 'pt-br',
+                    language: 'pt-BR',
+                    components: 'country:br',
                 }}
+                nearbyPlacesAPI='GooglePlacesSearch'
                 fetchDetails
+                isRowScrollable
+                enableHighAccuracyLocation
                 enablePoweredByContainer={false}
+                GooglePlacesSearchQuery={{
+                    // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+                    rankby: 'distance',
+                    types: 'police'
+                  }}
                 onFail={error => console.error(error)}
             />
             <View style={styles.viewLocationUser}>
@@ -165,11 +200,11 @@ export default function MapaDelitos() {
             </View>
 
             <View style={styles.containerButtons}>
-                <RectButton style={styles.btnSearch} onPress={() => {consultarLocalizacao(coordsLat, coordsLng)}}>
+                <RectButton style={styles.btnSearch} onPress={() => { consultarLocalizacao(coordsLat, coordsLng) }}>
                     <Text style={styles.btnText}>Consultar</Text>
                 </RectButton>
 
-                <RectButton style={styles.btnDenounce} onPress={() => alert('funcionando')}>
+                <RectButton style={styles.btnDenounce} onPress={() => { handleNavigateToDenunciar(latitude, longitude, endereco) }} >
                     <Text style={styles.btnText}>Denunciar</Text>
                 </RectButton>
             </View>
@@ -181,7 +216,8 @@ export default function MapaDelitos() {
                     } />
                 </RectButton>
             </View>
-            <ModalApp show={modal}
+            <ModalApp 
+                show={modal}
                 close={() => setModal(false)}
                 title={'Informações'}
                 description={'Cada denúncia ficará disponível por 15 dias.'}
@@ -284,7 +320,7 @@ const styles = StyleSheet.create({
     containerInfo: {
         position: 'absolute',
         bottom: 10,
-        right: 10
+        left: 10
     },
 
 });

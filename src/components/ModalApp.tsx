@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, Image, Pressable, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Modal, Image, Pressable } from 'react-native';
 
 interface ModalAppProps {
   show: boolean;
   close: Function;
-  //showTitle: boolean;
   title?: string;
-  //showDescription: boolean;
   description?: string;
   imgSuccess: boolean;
   imgError: boolean;
@@ -17,9 +15,7 @@ interface ModalAppProps {
 export default function AppModal({ 
   show, 
   close, 
-  //showTitle, 
   title, 
-  //showDescription, 
   description, 
   imgSuccess, 
   imgError, 
@@ -33,6 +29,7 @@ export default function AppModal({
       setModal(show);
      }, [show]);
 
+     if(show){
       return (
         <View style={styles.modalContainer}>
         <Modal
@@ -67,8 +64,12 @@ export default function AppModal({
             </View>
           </View>
         </Modal>
-      </View>
+      </View> 
     )
+     } else {
+      return( <View style={{width: 0, height: 0}}></View>);
+     }
+      
 }
 
 const styles = StyleSheet.create({

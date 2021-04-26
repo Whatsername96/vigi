@@ -1,6 +1,6 @@
 import React from 'react';
 //import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
+import { BorderlessButton } from 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, NativeModules, Platform, Dimensions, StatusBar } from 'react-native';
 
 import Back from 'react-native-vector-icons/Feather';

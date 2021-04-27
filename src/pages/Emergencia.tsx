@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Image, Dimensions, ScrollView, Linking } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import NumerosServicos from '../components/NumerosServicos';
@@ -9,7 +9,8 @@ export default function Emergencia() {
         <ScrollView>
             <View style={styles.container}>
 
-                <RectButton style={styles.botaoEmergencia} onPress={() => { }}>
+                <RectButton style={styles.botaoEmergencia} onPress={() => {
+                    {Linking.openURL('content://com.android.contacts/contacts')}}}>
                     <View style={styles.viewAgenda}>
                         <Image source={
                             require('../images/emergencia/agenda.png')

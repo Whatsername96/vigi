@@ -358,5 +358,4 @@ const styles = StyleSheet.create({
         fontFamily: 'Abel_400Regular',
         color: '#FFF',
     },
-
 })

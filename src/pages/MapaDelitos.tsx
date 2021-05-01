@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, ToastAndroid } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -14,56 +14,60 @@ import ModalApp from '../components/ModalApp';
 
 export default function MapaDelitos() {                   
     const [modal, setModal] = useState(false);
-    const [latitude, setLatitude] = useState(-30.084736);
-    const [longitude, setLongitude] = useState(-51.2348599);
+    const [latitude, setLatitude] = useState(-30.0339606);
+    const [longitude, setLongitude] = useState(-51.228157);
     const [errorMessage, setErrorMessage] = useState('');
-    const [endereco, setEndereco] = useState(Object);
+    const [endereco, setEndereco] = useState<string>('');
     const [coordsLat, setCoordsLat] = useState(0);
     const [coordsLng, setCoordsLng] = useState(0);
     const navigation = useNavigation();
-
+  
     //Pega url e busca no mapa os locais
     //fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=' + 1000 + '&type=police' + '&key=' + config.googleApi).then((response) =>{    
     //    return response.json();
     //}).then(response => console.log(response));
 
-
     async function getLocationAsync() {
         let status = Permission.askAsync(Permission.LOCATION);
         if ((await status).status !== 'granted') {
-            setErrorMessage('Permissão negada, não é possível mostrar a localização');
-            return ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+
+            return ToastAndroid.show('Permissão negada, não é possível mostrar a localização', ToastAndroid.SHORT);
 
         } else {
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
-            const { latitude, longitude } = location.coords
-            setEndereco(Location.reverseGeocodeAsync({ latitude, longitude }));
-            setLongitude(longitude);
+            const { latitude, longitude } = location.coords;
+            setEndereco(
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street + ', ' ?? '') +
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name + ' - ' ?? '') +
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district + ', ' ?? '') +
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion + ' - ' ?? '') +
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region + ', ' ?? '') +
+                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '')
+                );
+            setCoordsLat(latitude);
+            setCoordsLng(longitude);
             setLatitude(latitude);
+            setLongitude(longitude);
         }
     }
 
-    function consultarLocalizacao(latitude: number, longitude: number) {
-        if (latitude !== 0 && longitude !== 0) {
-            setLatitude(latitude);
-            setLongitude(longitude);
+    function consultarLocalizacao(coordsLat: number, coordsLng: number) {
+        if (coordsLat !== 0 && coordsLng !== 0) {
+            setLatitude(coordsLat);
+            setLongitude(coordsLng);
         }
     }
 
-        function handleNavigateToDenunciar(latitude: number, longitude: number, endereco: string) {
-            if (latitude == 0 && longitude == 0 && endereco == '') {
-                setErrorMessage('Digite o local da denúncia na caixa de texto');
-                return ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+        function handleNavigateToDenunciar(coordsLat: number, coordsLng: number, endereco: string) {
+            if (coordsLat == 0 || coordsLng == 0 || endereco?.trim() == '') {
+                return ToastAndroid.show('Digite o local da denúncia na caixa de texto', ToastAndroid.SHORT);
             } else {
-                navigation.navigate("Denunciar",
-                    {
-                        params: {
-                            endereco: endereco,
-                            lat: coordsLat,
-                            lng: coordsLng
-                        }
-                    }
-                )
+                navigation.navigate('Denunciar', {
+                        screen: 'Denunciar',
+                        end: endereco,
+                        lat: coordsLat,
+                        lng: coordsLng,
+                })
             }
         }
 
@@ -99,12 +103,14 @@ export default function MapaDelitos() {
             </MapView>
 
             <GooglePlacesAutocomplete
-                ref={() => {'Local'}}
                 placeholder='Digite o local'
                 textInputProps={{
                     placeholderTextColor: '#B4B3B3',
                     autoCapitalize: 'none',
                     autoCorrect: false,
+                    clearTextOnFocus: true,
+                    onChangeText: (text) => { setEndereco(text)},
+                    value: endereco,
                 }}
                 styles={{
                     container: {
@@ -165,8 +171,8 @@ export default function MapaDelitos() {
                         borderWidth: 0.5,
                         borderColor: '#B4B3B3'
                     }
-
                 }}
+              
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     setEndereco(data.description);
@@ -204,7 +210,7 @@ export default function MapaDelitos() {
                     <Text style={styles.btnText}>Consultar</Text>
                 </RectButton>
 
-                <RectButton style={styles.btnDenounce} onPress={() => { handleNavigateToDenunciar(latitude, longitude, endereco) }} >
+                <RectButton style={styles.btnDenounce} onPress={() => { handleNavigateToDenunciar(coordsLat, coordsLng, endereco) }} >
                     <Text style={styles.btnText}>Denunciar</Text>
                 </RectButton>
             </View>
@@ -224,7 +230,6 @@ export default function MapaDelitos() {
                 imgSuccess={false}
                 imgError={false}
                 btnBack={false}
-                route={''}
             />
         </View>
     );

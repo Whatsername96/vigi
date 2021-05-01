@@ -4,16 +4,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Header from './components/Header';
 
-const { Navigator, Screen } = createStackNavigator();
-
 import MapaDelitos from './pages/MapaDelitos';
 import Emergencia from './pages/Emergencia';
 import Denunciar from './pages/Denunciar';
 
+const { Navigator, Screen } = createStackNavigator();
+
 export default function Routes() {
     return (
         <NavigationContainer>
-            <Navigator screenOptions={{ headerShown: true }}>
+            <Navigator screenOptions={{headerShown: true}}>
                 <Screen
                     name={"MapaDelitos"}
                     component={MapaDelitos}

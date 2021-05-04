@@ -32,7 +32,7 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
                 barStyle="light-content"
                 hidden={false}
                 backgroundColor="#394867"
-                translucent={false}
+                translucent
             />
 
             {showBack &&

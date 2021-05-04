@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import ModalApp from '../components/ModalApp';
+
+const { StatusBarManager } = NativeModules;
+const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 type ParamList = {
     Denunciar: {
@@ -24,14 +27,27 @@ export default function Denunciar() {
     const { end, lat, lng } = route.params;
     const [selectedValue, setSelectedValue] = useState('Selecione o tipo de crime');
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [inputVisible, setInputVisible] = useState(false);
+    const [valueOutros, setValueOutros] = useState('');
 
     function getDate() {
         var today = new Date();
-        if (today.getMonth().toString().length == 1) {
-            return (today.getDate() + "/" + 0 + ((today.getMonth() + 1).toString()) + "/" + today.getFullYear());
+        let dia;
+        if (today.getMonth().toString().length === 1) {
+            dia = ('0' + today.getDate() + "/");
         } else {
-            return (today.getDate() + "/" + ((today.getMonth() + 1).toString()) + "/" + today.getFullYear());
+            dia = (today.getDate() + "/");
         }
+
+        if (today.getMonth().toString().length === 1) {
+            dia += (+ '0' + ((today.getMonth() + 1).toString()) + "/");
+        } else {
+            dia += (+ ((today.getMonth() + 1).toString()) + "/");
+        }
+
+        dia += today.getFullYear();
+
+        return dia;
     }
 
     function getTime() {
@@ -52,8 +68,18 @@ export default function Denunciar() {
         return (hour + minutes);
     }
 
+    function hideShowInputOutros(item: any) {
+        if (item.value === 'outros') {
+            setInputVisible(true);
+        } else {
+            setInputVisible(false);
+            setValueOutros('');
+        }
+    }
+
     return (
         <ScrollView>
+
             <View style={styles.container}>
 
                 <View style={styles.viewTitle}>
@@ -64,7 +90,6 @@ export default function Denunciar() {
                     <Text style={styles.textInfoLocal}>Local selecionado do mapa: </Text>
                 </View>
 
-
                 <View style={styles.viewInputLocal}>
                     <TextInput
                         style={styles.textInputLocal}
@@ -74,8 +99,8 @@ export default function Denunciar() {
                     />
                 </View>
 
-
                 <View style={styles.viewDateTime}>
+
                     <Text style={styles.textDateTime}>Data:</Text>
                     <TextInputMask
                         placeholder={'__/__/___'}
@@ -102,9 +127,11 @@ export default function Denunciar() {
                         value={time}
                         onChangeText={text => { setTime(text) }}
                     />
+
                 </View>
 
                 <View style={styles.viewPicker}>
+
                     <DropDownPicker
                         placeholder={'Selecione um tipo de delito...'}
                         placeholderStyle={styles.pickerPlaceholder}
@@ -126,18 +153,35 @@ export default function Denunciar() {
                         ]}
                         defaultValue={''}
                         containerStyle={styles.containerPicker}
-                        style={styles.dropdownPicker}
+                        style={styles.picker}
                         itemStyle={styles.itemsPicker}
                         labelStyle={styles.labelPicker}
-                        dropDownStyle={{ backgroundColor: '#FFF' }}
-                        onChangeItem={(item, index) => { setSelectedValue(item); setSelectedIndex(index) }}
+                        dropDownStyle={styles.dropDownPicker}
+                        onChangeItem={(item, index) => { setSelectedValue(item.value); setSelectedIndex(index); hideShowInputOutros(item) }}
                     />
+
                 </View>
+                {inputVisible && selectedValue === 'outros' &&
+
+                    <View style={styles.viewOutros}>
+                        <TextInput
+                            style={styles.textInputOutros}
+                            placeholder={'Qual o crime?'}
+                            value={valueOutros}
+                            onChangeText={text => { setValueOutros(text) }}
+                        />
+                    </View>
+
+                }
+
                 <View style={styles.containerButtons}>
+
                     <RectButton style={styles.btnDenounce} onPress={() => { setModal(true) }} >
                         <Text style={styles.btnText}>Salvar</Text>
                     </RectButton>
+
                 </View>
+
                 <ModalApp
                     show={modal}
                     close={() => setModal(false)}
@@ -146,8 +190,11 @@ export default function Denunciar() {
                     imgSuccess={true}
                     imgError={false}
                     btnBack={false}
+                    route={'MapaDelitos'}
                 />
+
             </View>
+            
         </ScrollView>
     );
 }
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#EFEEEE',
         width: Dimensions.get('window').width,
-        height: '100%',
+        height: Dimensions.get('window').height - alturaStatusBar,
     },
 
     viewTitle: {
@@ -197,7 +244,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontFamily: 'Abel_400Regular',
         fontSize: 16,
-
     },
 
     viewDateTime: {
@@ -242,19 +288,22 @@ const styles = StyleSheet.create({
 
     viewPicker: {
         paddingHorizontal: 20,
-        marginTop: 40,
+        marginTop: 30,
     },
 
     containerPicker: {
         height: 60,
     },
 
-    dropdownPicker: {
+    picker: {
         backgroundColor: '#FFF',
         borderRadius: 6,
         elevation: 5,
-        height: 70,
         width: '100%',
+    },
+
+    dropDownPicker: {
+        backgroundColor: '#FFF',
     },
 
     pickerPlaceholder: {
@@ -279,6 +328,24 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         textAlign: 'left',
+    },
+
+    viewOutros: {
+        top: 0,
+        paddingHorizontal: 20,
+        height: 60,
+        marginTop: 30,
+        zIndex: 2,
+    },
+
+    textInputOutros: {
+        backgroundColor: '#FFFFFF',
+        height: '100%',
+        borderRadius: 6,
+        elevation: 5,
+        paddingHorizontal: 10,
+        fontFamily: 'Abel_400Regular',
+        fontSize: 20,
     },
 
     containerButtons: {

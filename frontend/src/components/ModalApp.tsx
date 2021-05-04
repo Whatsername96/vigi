@@ -10,6 +10,7 @@ interface ModalAppProps {
   imgSuccess: boolean;
   imgError: boolean;
   btnBack: boolean;
+  route : string
 }
 
 export default function AppModal({
@@ -19,7 +20,8 @@ export default function AppModal({
   description,
   imgSuccess,
   imgError,
-  btnBack
+  btnBack,
+  route
 }: ModalAppProps) {
 
   const [modal, setModal] = useState(false);
@@ -31,13 +33,14 @@ export default function AppModal({
 
   if (show) {
     return (
-      <View style={styles.modalContainer}>
+
         <Modal
           animationType="fade"
+          statusBarTranslucent
           transparent={true}
           visible={modal}
           onRequestClose={() => {
-            close(!modal);
+            navigation.navigate(route)
           }}
         >
           <View style={styles.modalContainer}>
@@ -49,7 +52,7 @@ export default function AppModal({
 
               <Pressable
                 style={styles.modalButton}
-                onPress={() => { close(!modal); { navigation.navigate('MapaDelitos') } }} //colocar função para alterar a tela aqui -> route
+                onPress={() => { close(!modal); { navigation.navigate(route) } }} //colocar função para alterar a tela aqui -> route
               >
                 <Text style={styles.modalButtonText}>Ok</Text>
               </Pressable>
@@ -64,7 +67,7 @@ export default function AppModal({
             </View>
           </View>
         </Modal>
-      </View>
+
     )
   } else {
     return (<View style={{ width: 0, height: 0 }}></View>);
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    margin: 20,
+    margin: 0,
     width: '70%',
     backgroundColor: "#E5E5E5",
     borderRadius: 6,

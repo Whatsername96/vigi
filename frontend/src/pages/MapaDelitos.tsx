@@ -230,6 +230,7 @@ export default function MapaDelitos() {
                 imgSuccess={false}
                 imgError={false}
                 btnBack={false}
+                route={'MapaDelitos'}
             />
         </View>
     );

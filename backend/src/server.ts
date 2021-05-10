@@ -1,38 +1,18 @@
 import express from 'express';
-import './database/connection';
-import { getRepository } from 'typeorm';
+import 'express-async-errors';
+import cors from 'cors';
 
-import Delito from './models/Delitos';
+import './database/connection';
+
+import routes from './routes';
+import errorHandler from './errors/handler';
 
 const app = express();
 
-app.use(express.json())
-
-app.post('/delitos', async (request, response) => {
-   const {
-      tipo_delito,
-      data,
-      hora,
-      latitude,
-      longitude,
-      descricao,
-   } = request.body;
-
-   const delitosRepository = getRepository(Delito);
-
-   const delito = delitosRepository.create({
-      tipo_delito,
-      data,
-      hora,
-      latitude,
-      longitude,
-      descricao,
-   });
-
-   await delitosRepository.save(delito);
-
-   return response.json({ message: 'Hello World' });
-});
+app.use(cors());
+app.use(express.json());
+app.use(routes);
+app.use(errorHandler);
 
 app.listen(3333);
 //localhost:3333

@@ -12,16 +12,16 @@ import config from '../../config/index.json';
 import markerAssalto from '../images/assalto/assalto.png';
 import ModalApp from '../components/ModalApp';
 
-export default function MapaDelitos() {                   
+export default function MapaDelitos() {
     const [modal, setModal] = useState(false);
     const [latitude, setLatitude] = useState(-30.0339606);
     const [longitude, setLongitude] = useState(-51.228157);
     const [errorMessage, setErrorMessage] = useState('');
-    const [endereco, setEndereco] = useState<string>('');
+    const [endereco, setEndereco] = useState<string | null>('');
     const [coordsLat, setCoordsLat] = useState(0);
     const [coordsLng, setCoordsLng] = useState(0);
     const navigation = useNavigation();
-  
+
     //Pega url e busca no mapa os locais
     //fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=' + 1000 + '&type=police' + '&key=' + config.googleApi).then((response) =>{    
     //    return response.json();
@@ -36,14 +36,23 @@ export default function MapaDelitos() {
         } else {
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
             const { latitude, longitude } = location.coords;
+
+            let street = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street ?? '');
+            let name = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name ?? '');
+            let district = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district ?? '');
+            let subregion = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion ??  '');
+            let region = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region ?? '');
+            let country = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '');
+
             setEndereco(
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street + ', ' ?? '') +
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name + ' - ' ?? '') +
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district + ', ' ?? '') +
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion + ' - ' ?? '') +
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region + ', ' ?? '') +
-                ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '')
-                );
+                (street.length ? street + ', ' : '') +
+                (name.length ? name + ' - ' : '') +
+                (district.length ? district + ', ' : '') +
+                (subregion.length ? subregion + ', ' : '') +
+                (region.length ? region + ' - ' : '') +
+                (country.length ? country : '')
+            );
+            console.log(endereco);
             setCoordsLat(latitude);
             setCoordsLng(longitude);
             setLatitude(latitude);
@@ -58,18 +67,18 @@ export default function MapaDelitos() {
         }
     }
 
-        function handleNavigateToDenunciar(coordsLat: number, coordsLng: number, endereco: string) {
-            if (coordsLat == 0 || coordsLng == 0 || endereco?.trim() == '') {
-                return ToastAndroid.show('Digite o local da denúncia na caixa de texto', ToastAndroid.SHORT);
-            } else {
-                navigation.navigate('Denunciar', {
-                        screen: 'Denunciar',
-                        end: endereco,
-                        lat: coordsLat,
-                        lng: coordsLng,
-                })
-            }
+    function handleNavigateToDenunciar(coordsLat: number, coordsLng: number, endereco: string | null) {
+        if (coordsLat == 0 || coordsLng == 0 || endereco?.trim() == '') {
+            return ToastAndroid.show('Digite o local da denúncia na caixa de texto', ToastAndroid.SHORT);
+        } else {
+            navigation.navigate('Denunciar', {
+                screen: 'Denunciar',
+                end: endereco,
+                lat: coordsLat,
+                lng: coordsLng,
+            })
         }
+    }
 
     return (
         <View style={styles.container}>
@@ -109,14 +118,14 @@ export default function MapaDelitos() {
                     autoCapitalize: 'none',
                     autoCorrect: false,
                     clearTextOnFocus: true,
-                    onChangeText: (text) => { setEndereco(text)},
+                    onChangeText: (text) => { setEndereco(text) },
                     value: endereco,
                 }}
                 styles={{
                     container: {
                         position: 'absolute',
                         width: '100%',
-                        top: 10,
+                        top: 30,
                     },
                     textInputContainer: {
                         flex: 1,
@@ -172,13 +181,13 @@ export default function MapaDelitos() {
                         borderColor: '#B4B3B3'
                     }
                 }}
-              
+
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     setEndereco(data.description);
                     setCoordsLat(details?.geometry.location.lat ?? 0);
                     setCoordsLng(details?.geometry.location.lng ?? 0);
-                    
+
                 }}
                 query={{
                     key: config.googleApi,
@@ -194,7 +203,7 @@ export default function MapaDelitos() {
                     // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
                     rankby: 'distance',
                     types: 'police'
-                  }}
+                }}
                 onFail={error => console.error(error)}
             />
             <View style={styles.viewLocationUser}>
@@ -222,7 +231,7 @@ export default function MapaDelitos() {
                     } />
                 </RectButton>
             </View>
-            <ModalApp 
+            <ModalApp
                 show={modal}
                 close={() => setModal(false)}
                 title={'Informações'}
@@ -246,7 +255,7 @@ const styles = StyleSheet.create({
 
     viewLocationUser: {
         position: 'absolute',
-        top: 0,
+        top: 20,
         marginTop: 25,
         marginRight: 35,
         right: 0,
@@ -260,7 +269,7 @@ const styles = StyleSheet.create({
     containerButtons: {
         position: 'absolute',
         flex: 1,
-        top: 70,
+        top: 90,
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',

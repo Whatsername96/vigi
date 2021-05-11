@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         width: Dimensions.get('window').width,
-        top: 0,
+        top: alturaStatusBar,
         backgroundColor: '#394867',
         borderBottomWidth: 1,
         paddingBottom: 10,

@@ -27,12 +27,11 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
 
         <View style={styles.container}>
 
-
             <StatusBar
                 barStyle="light-content"
                 hidden={false}
                 backgroundColor="#394867"
-                translucent
+                translucent={false}
             />
 
             {showBack &&
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
         width: Dimensions.get('window').width,
-        top: alturaStatusBar,
+        top: 0,
         backgroundColor: '#394867',
         borderBottomWidth: 1,
         paddingBottom: 10,

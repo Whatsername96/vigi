@@ -33,7 +33,7 @@ export default function Denunciar() {
     function getDate() {
         var today = new Date();
         let dia;
-        if (today.getMonth().toString().length === 1) {
+        if (today.getDate().toString().length === 1) {
             dia = ('0' + today.getDate() + "/");
         } else {
             dia = (today.getDate() + "/");

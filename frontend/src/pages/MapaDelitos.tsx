@@ -125,7 +125,8 @@ export default function MapaDelitos() {
                     container: {
                         position: 'absolute',
                         width: '100%',
-                        top: 30,
+                        top: 0,
+                        marginTop: 10
                     },
                     textInputContainer: {
                         flex: 1,
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
 
     viewLocationUser: {
         position: 'absolute',
-        top: 20,
+        top: 0,
         marginTop: 25,
         marginRight: 35,
         right: 0,
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     containerButtons: {
         position: 'absolute',
         flex: 1,
-        top: 90,
+        top: 70,
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',

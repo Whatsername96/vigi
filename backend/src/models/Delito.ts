@@ -23,4 +23,7 @@ export default class Delito {
 
     @Column()
     descricao: string;
+
+    @Column()
+    index: number;
 }

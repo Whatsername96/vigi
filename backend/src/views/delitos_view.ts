@@ -10,6 +10,7 @@ export default {
             latitude: delito.latitude,
             longitude: delito.longitude,
             descricao: delito.descricao,
+            index: delito.index,
         };
     },
 

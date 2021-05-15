@@ -24,6 +24,7 @@ export default {
             latitude,
             longitude,
             descricao,
+            index,
         } = request.body;
 
         const delitosRepository = getRepository(Delito);
@@ -35,6 +36,7 @@ export default {
             latitude,
             longitude,
             descricao,
+            index,
         };
 
         const schema = Yup.object().shape({
@@ -44,6 +46,7 @@ export default {
             latitude: Yup.number().required('Latitude é obrigatório'),
             longitude: Yup.number().required('Longitude é obrigatório'),
             descricao: Yup.string().optional().nullable(),
+            index: Yup.number().required(),
         });
 
         await schema.validate(dados, {

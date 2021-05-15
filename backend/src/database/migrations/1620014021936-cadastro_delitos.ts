@@ -45,6 +45,11 @@ export class cadastroDelitos1620014021936 implements MigrationInterface {
                     type: 'varchar',
                     isNullable: true,
                     default: null,
+                },
+                {
+                    name: 'index',
+                    type: 'number',
+                    isNullable: false,
                 }
             ],
             

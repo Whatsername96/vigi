@@ -136,20 +136,20 @@ export default function Denunciar() {
                         placeholder={'Selecione um tipo de delito...'}
                         placeholderStyle={styles.pickerPlaceholder}
                         items={[
-                            { label: 'Assalto', value: 'assalto', icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
-                            { label: 'Ato Obsceno', value: 'ato-obsceno', icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
-                            { label: 'Disparos', value: 'disparos', icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
-                            { label: 'Furto', value: 'furto', icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
-                            { label: 'Homicídio', value: 'homicidio', icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
-                            { label: 'Lesão Corporal', value: 'lesao-corporal', icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
-                            { label: 'Maus Tratos', value: 'maus-tratos', icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
-                            { label: 'Roubo', value: 'roubo', icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
-                            { label: 'Sequestro', value: 'sequestro', icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
-                            { label: 'Tráfico', value: 'trafico', icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
-                            { label: 'Usuários de Drogas', value: 'usuarios-drogas', icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
-                            { label: 'Vandalismo', value: 'vandalismo', icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
-                            { label: 'Violação de Domicílio', value: 'violacao-domicilio', icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
-                            { label: 'Outros', value: 'outros', icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
+                            { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
+                            { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
+                            { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
+                            { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
+                            { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
+                            { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
+                            { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
+                            { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
+                            { label: 'Roubo', value: 8, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
+                            { label: 'Sequestro', value: 9, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
+                            { label: 'Tráfico', value: 10, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
+                            { label: 'Usuários de Drogas', value: 11, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
+                            { label: 'Vandalismo', value: 12, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
+                            { label: 'Outros', value: 13, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
                         ]}
                         defaultValue={''}
                         containerStyle={styles.containerPicker}

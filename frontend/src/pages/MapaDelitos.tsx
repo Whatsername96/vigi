@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, ToastAndroid } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -9,18 +9,55 @@ import * as Location from 'expo-location';
 import * as Permission from 'expo-permissions';
 
 import config from '../../config/index.json';
-import markerAssalto from '../images/assalto/assalto.png';
+
+const markerImages = [
+    require('../images/assalto/assalto.png'),
+    require('../images/ato-obsceno/ato-obsceno.png'),
+    require('../images/disparos/disparos.png'),
+    require('../images/furto/furto.png'),
+    require('../images/homicidio/homicidio.png'),
+    require('../images/invasao-domicilio/invasao-domicilio.png'),
+    require('../images/lesao-corporal/lesao-corporal.png'),
+    require('../images/maus-tratos-animais/maus-tratos-animais.png'),
+    require('../images/roubo/roubo.png'),
+    require('../images/sequestro/sequestro.png'),
+    require('../images/trafico/trafico.png'),
+    require('../images/usuarios-drogas/usuarios-drogas.png'),
+    require('../images/vandalismo/vandalismo.png'),
+    require('../images/outros/outros.png'),
+];
+
 import ModalApp from '../components/ModalApp';
+import api from '../services/api';
+
+interface Delito {
+    id: number;
+    tipo_delito: string;
+    latitude: number;
+    longitude: number;
+    data: string;
+    hora: string;
+    descricao: string;
+    index: number;
+}
 
 export default function MapaDelitos() {
     const [modal, setModal] = useState(false);
     const [latitude, setLatitude] = useState(-30.0339606);
     const [longitude, setLongitude] = useState(-51.228157);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [endereco, setEndereco] = useState<string | null>('');
+    const [endereco, setEndereco] = useState<string>('');
     const [coordsLat, setCoordsLat] = useState(0);
     const [coordsLng, setCoordsLng] = useState(0);
+    const [delitos, setDelitos] = useState<Delito[]>([]);
     const navigation = useNavigation();
+
+    useEffect(() => {
+        api.get('/delitos').then(response => {
+            setDelitos(response.data);
+        });
+    }, []);
+
+    
 
     //Pega url e busca no mapa os locais
     //fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=' + 1000 + '&type=police' + '&key=' + config.googleApi).then((response) =>{    
@@ -40,7 +77,7 @@ export default function MapaDelitos() {
             let street = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street ?? '');
             let name = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name ?? '');
             let district = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district ?? '');
-            let subregion = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion ??  '');
+            let subregion = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion ?? '');
             let region = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region ?? '');
             let country = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '');
 
@@ -67,7 +104,7 @@ export default function MapaDelitos() {
         }
     }
 
-    function handleNavigateToDenunciar(coordsLat: number, coordsLng: number, endereco: string | null) {
+    function handleNavigateToDenunciar(coordsLat: number, coordsLng: number, endereco: string) {
         if (coordsLat == 0 || coordsLng == 0 || endereco?.trim() == '') {
             return ToastAndroid.show('Digite o local da denúncia na caixa de texto', ToastAndroid.SHORT);
         } else {
@@ -95,20 +132,27 @@ export default function MapaDelitos() {
                     longitudeDelta: 0.002,
                 }}
             >
-                <Marker
-                    icon={markerAssalto}
-                    coordinate={{
-                        latitude: latitude,
-                        longitude: longitude,
-                    }}
-                >
-                    <Callout tooltip={true}>
-                        <View style={styles.calloutContainer}>
-                            <Text style={styles.calloutTitle}>Assalto</Text>
-                            <Text style={styles.calloutText}>07/04/2021 - 18h</Text>
-                        </View>
-                    </Callout>
-                </Marker>
+
+                {delitos.map(delito => {
+                    return (
+                        <Marker
+                            key={delito.id}
+                            icon={markerImages[delito.index]}
+                            coordinate={{
+                                latitude: delito.latitude,
+                                longitude: delito.longitude,
+                            }}
+                        >
+                            <Callout tooltip={true}>
+                                <View style={styles.calloutContainer}>
+                                    <Text style={styles.calloutTitle}>{delito.tipo_delito}</Text>
+                                    <Text style={styles.calloutText}>{delito.data} - {delito.hora}</Text>
+                                </View>
+                            </Callout>
+                        </Marker>
+                    )
+                })}
+
             </MapView>
 
             <GooglePlacesAutocomplete

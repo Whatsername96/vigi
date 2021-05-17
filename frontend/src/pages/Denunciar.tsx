@@ -30,7 +30,7 @@ export default function Denunciar() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [inputVisible, setInputVisible] = useState(false);
     const [valueOutros, setValueOutros] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState(0);
 
     function getDate() {
         var today = new Date();
@@ -103,7 +103,9 @@ export default function Denunciar() {
         data.append('descricao', valueOutros);
         data.append('index', String(selectedIndex));
 
-        await api.post('delitos', data);
+        await api.post('delitos', data).then((response) =>{ 
+            setStatus(response.status);
+        });
 
         console.log(status);
     }

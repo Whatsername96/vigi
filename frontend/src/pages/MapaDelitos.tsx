@@ -52,23 +52,27 @@ export default function MapaDelitos() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        api.get('/delitos').then(response => {
+        api.get('delitos').then(response => {
             setDelitos(response.data);
         });
+        
     }, []);
 
-    
-
-    //Pega url e busca no mapa os locais
-    //fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=' + 1000 + '&type=police' + '&key=' + config.googleApi).then((response) =>{    
-    //    return response.json();
-    //}).then(response => console.log(response));
+    function formatarData(data: string) {
+        let arrayData;
+        let dia, mes, ano;
+        arrayData = data.split('-');
+        dia = arrayData[2]; 
+        mes = arrayData[1]; 
+        ano = arrayData[0];
+        return (dia + '/'+ mes + '/' + ano);
+    }
 
     async function getLocationAsync() {
         let status = Permission.askAsync(Permission.LOCATION);
         if ((await status).status !== 'granted') {
 
-            return ToastAndroid.show('Permissão negada, não é possível mostrar a localização', ToastAndroid.SHORT);
+            return ToastAndroid.show('Permissão negada, não é possível mostrar a sua localização', ToastAndroid.SHORT);
 
         } else {
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
@@ -89,7 +93,6 @@ export default function MapaDelitos() {
                 (region.length ? region + ' - ' : '') +
                 (country.length ? country : '')
             );
-            console.log(endereco);
             setCoordsLat(latitude);
             setCoordsLng(longitude);
             setLatitude(latitude);
@@ -134,6 +137,7 @@ export default function MapaDelitos() {
             >
 
                 {delitos.map(delito => {
+                    let data = formatarData(delito.data);
                     return (
                         <Marker
                             key={delito.id}
@@ -146,7 +150,7 @@ export default function MapaDelitos() {
                             <Callout tooltip={true}>
                                 <View style={styles.calloutContainer}>
                                     <Text style={styles.calloutTitle}>{delito.tipo_delito}</Text>
-                                    <Text style={styles.calloutText}>{delito.data} - {delito.hora}</Text>
+                                    <Text style={styles.calloutText}>{data} - {delito.hora}</Text>
                                 </View>
                             </Callout>
                         </Marker>

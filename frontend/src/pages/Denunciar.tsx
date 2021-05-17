@@ -6,6 +6,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import ModalApp from '../components/ModalApp';
+import api from '../services/api';
 
 const { StatusBarManager } = NativeModules;
 const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -29,6 +30,7 @@ export default function Denunciar() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [inputVisible, setInputVisible] = useState(false);
     const [valueOutros, setValueOutros] = useState('');
+    const [status, setStatus] = useState('');
 
     function getDate() {
         var today = new Date();
@@ -69,12 +71,41 @@ export default function Denunciar() {
     }
 
     function hideShowInputOutros(item: any) {
+        console.log(item.value === 'outros');
         if (item.value === 'outros') {
             setInputVisible(true);
         } else {
             setInputVisible(false);
             setValueOutros('');
         }
+    }
+
+    function formatarData(date: string){
+        let arrayData;
+        let dia, mes, ano;
+        arrayData = date.split('/');
+        dia = arrayData[0]; 
+        mes = arrayData[1]; 
+        ano = arrayData[2];
+        return (ano + '-' + mes + '-' + dia);
+    }
+
+    async function cadastrarDelito(){
+        const data = new FormData();
+
+        let dataFormatada = formatarData(date);
+
+        data.append('tipo_delito', selectedValue);
+        data.append('data', dataFormatada);
+        data.append('hora', time);
+        data.append('latitude', String(lat));
+        data.append('longitude', String(lng));
+        data.append('descricao', valueOutros);
+        data.append('index', String(selectedIndex));
+
+        await api.post('delitos', data);
+
+        console.log(status);
     }
 
     return (
@@ -136,20 +167,20 @@ export default function Denunciar() {
                         placeholder={'Selecione um tipo de delito...'}
                         placeholderStyle={styles.pickerPlaceholder}
                         items={[
-                            { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
-                            { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
-                            { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
-                            { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
-                            { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
-                            { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
-                            { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
-                            { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
-                            { label: 'Roubo', value: 8, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
-                            { label: 'Sequestro', value: 9, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
-                            { label: 'Tráfico', value: 10, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
-                            { label: 'Usuários de Drogas', value: 11, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
-                            { label: 'Vandalismo', value: 12, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
-                            { label: 'Outros', value: 13, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
+                            { label: 'Assalto', value: 'assalto', icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
+                            { label: 'Ato Obsceno', value: 'ato_obsceno', icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
+                            { label: 'Disparos', value: 'disparos', icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
+                            { label: 'Furto', value: 'furto', icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
+                            { label: 'Homicídio', value: 'homicidio', icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
+                            { label: 'Invasão de Domicílio', value: 'invasao_domicilio', icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
+                            { label: 'Lesão Corporal', value: 'lesao_corporal', icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
+                            { label: 'Maus Tratos', value: 'maus_tratos', icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
+                            { label: 'Roubo', value: 'roubo', icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
+                            { label: 'Sequestro', value: 'sequestro', icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
+                            { label: 'Tráfico', value: 'trafico', icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
+                            { label: 'Usuários de Drogas', value: 'usuarios_drogas', icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
+                            { label: 'Vandalismo', value: 'vandalismo', icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
+                            { label: 'Outros', value: 'outros', icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
                         ]}
                         defaultValue={''}
                         containerStyle={styles.containerPicker}
@@ -176,7 +207,7 @@ export default function Denunciar() {
 
                 <View style={styles.containerButtons}>
 
-                    <RectButton style={styles.btnDenounce} onPress={() => { setModal(true) }} >
+                    <RectButton style={styles.btnDenounce} onPress={cadastrarDelito} >
                         <Text style={styles.btnText}>Salvar</Text>
                     </RectButton>
 

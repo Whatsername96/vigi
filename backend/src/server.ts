@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 
 import './database/connection';
 
@@ -10,7 +11,9 @@ import errorHandler from './errors/handler';
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 app.use(errorHandler);
 

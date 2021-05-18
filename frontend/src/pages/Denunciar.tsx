@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform, ToastAndroid } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
@@ -30,7 +30,7 @@ export default function Denunciar() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [inputVisible, setInputVisible] = useState(false);
     const [valueOutros, setValueOutros] = useState('');
-    const [status, setStatus] = useState(0);
+    const [status, setStatus] = useState('');
 
     function getDate() {
         var today = new Date();
@@ -71,8 +71,7 @@ export default function Denunciar() {
     }
 
     function hideShowInputOutros(item: any) {
-        console.log(item.value === 'outros');
-        if (item.value === 'outros') {
+        if (item.value === 'Outros') {
             setInputVisible(true);
         } else {
             setInputVisible(false);
@@ -80,34 +79,38 @@ export default function Denunciar() {
         }
     }
 
-    function formatarData(date: string){
+    function formatarData(date: string) {
         let arrayData;
         let dia, mes, ano;
         arrayData = date.split('/');
-        dia = arrayData[0]; 
-        mes = arrayData[1]; 
+        dia = arrayData[0];
+        mes = arrayData[1];
         ano = arrayData[2];
         return (ano + '-' + mes + '-' + dia);
     }
 
-    async function cadastrarDelito(){
+    async function cadastrarDelito() {
         const data = new FormData();
 
         let dataFormatada = formatarData(date);
+        if (selectedValue == 'Selecione o tipo de crime' || date == '' || time == '') {
+            return ToastAndroid.show('Preencha todos os campos para salvar', ToastAndroid.SHORT);
 
-        data.append('tipo_delito', selectedValue);
-        data.append('data', dataFormatada);
-        data.append('hora', time);
-        data.append('latitude', String(lat));
-        data.append('longitude', String(lng));
-        data.append('descricao', valueOutros);
-        data.append('index', String(selectedIndex));
+        } else {
+            data.append('tipo_delito', selectedValue);
+            data.append('data', dataFormatada);
+            data.append('hora', time);
+            data.append('latitude', String(lat));
+            data.append('longitude', String(lng));
+            data.append('descricao', valueOutros);
+            data.append('index', String(selectedIndex));
 
-        await api.post('delitos', data).then((response) =>{ 
-            setStatus(response.status);
-        });
+            await api.post('delitos', data).then((response) => {
+                setStatus(response.status.toString()); // Retorna o status 201 se deu certo
+            });
 
-        console.log(status);
+            setModal(true);
+        }
     }
 
     return (
@@ -169,20 +172,20 @@ export default function Denunciar() {
                         placeholder={'Selecione um tipo de delito...'}
                         placeholderStyle={styles.pickerPlaceholder}
                         items={[
-                            { label: 'Assalto', value: 'assalto', icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
-                            { label: 'Ato Obsceno', value: 'ato_obsceno', icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
-                            { label: 'Disparos', value: 'disparos', icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
-                            { label: 'Furto', value: 'furto', icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
-                            { label: 'Homicídio', value: 'homicidio', icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
-                            { label: 'Invasão de Domicílio', value: 'invasao_domicilio', icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
-                            { label: 'Lesão Corporal', value: 'lesao_corporal', icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
-                            { label: 'Maus Tratos', value: 'maus_tratos', icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
-                            { label: 'Roubo', value: 'roubo', icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
-                            { label: 'Sequestro', value: 'sequestro', icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
-                            { label: 'Tráfico', value: 'trafico', icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
-                            { label: 'Usuários de Drogas', value: 'usuarios_drogas', icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
-                            { label: 'Vandalismo', value: 'vandalismo', icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
-                            { label: 'Outros', value: 'outros', icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
+                            { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
+                            { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
+                            { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
+                            { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
+                            { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
+                            { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
+                            { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
+                            { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
+                            { label: 'Outros', value: 8, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
+                            { label: 'Roubo', value: 9, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
+                            { label: 'Sequestro', value: 10, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
+                            { label: 'Tráfico', value: 11, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
+                            { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
+                            { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
                         ]}
                         defaultValue={''}
                         containerStyle={styles.containerPicker}
@@ -190,11 +193,11 @@ export default function Denunciar() {
                         itemStyle={styles.itemsPicker}
                         labelStyle={styles.labelPicker}
                         dropDownStyle={styles.dropDownPicker}
-                        onChangeItem={(item, index) => { setSelectedValue(item.value); setSelectedIndex(index); hideShowInputOutros(item) }}
+                        onChangeItem={(item, index) => { setSelectedValue(item.label);; setSelectedIndex(item.value); hideShowInputOutros(item) }}
                     />
 
                 </View>
-                {inputVisible && selectedValue === 'outros' &&
+                {inputVisible && selectedValue === 'Outros' &&
 
                     <View style={styles.viewOutros}>
                         <TextInput
@@ -204,7 +207,6 @@ export default function Denunciar() {
                             onChangeText={text => { setValueOutros(text) }}
                         />
                     </View>
-
                 }
 
                 <View style={styles.containerButtons}>
@@ -215,19 +217,32 @@ export default function Denunciar() {
 
                 </View>
 
-                <ModalApp
-                    show={modal}
-                    close={() => setModal(false)}
-                    title={undefined}
-                    description={'Denúncia feita com sucesso.'}
-                    imgSuccess={true}
-                    imgError={false}
-                    btnBack={false}
-                    route={'MapaDelitos'}
-                />
+                {status === '201' ?
+                    <ModalApp
+                        show={modal}
+                        close={() => setModal(false)}
+                        title={undefined}
+                        description={'Denúncia feita com sucesso.'}
+                        imgSuccess={true}
+                        imgError={false}
+                        btnBack={false}
+                        route={'MapaDelitos'}
+                    />
+                    :
+                    <ModalApp
+                        show={modal}
+                        close={() => setModal(false)}
+                        title={undefined}
+                        description={'Ocorreu um erro.'}
+                        imgSuccess={false}
+                        imgError={true}
+                        btnBack={true}
+                        route={'MapaDelitos'}
+                    />
+                }
 
             </View>
-            
+
         </ScrollView>
     );
 }

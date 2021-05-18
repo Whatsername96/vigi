@@ -52,6 +52,7 @@ export default function MapaDelitos() {
     const navigation = useNavigation();
 
     useEffect(() => {
+        api.delete('delitos');
         api.get('delitos').then(response => {
             setDelitos(response.data);
         });

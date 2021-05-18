@@ -67,12 +67,14 @@ export default {
 
         const delitos = await delitosRepository.find();
 
-        let hoje = new Date();
+        
         
         delitos.forEach(async delito => {
             let partesData = delito.data.split("-");
             let dataDelito = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) -1), parseInt(partesData[0]));
-           
+
+            let hoje = new Date();
+
             let strData = (hoje.getFullYear().toString() + '-' + (hoje.getMonth() + 1).toString() + '-' + hoje.getDate().toString());
             partesData = strData.split("-");
 
@@ -81,7 +83,7 @@ export default {
             let milissegundos_por_dia = 1000 * 60 * 60 * 24;
             let expirado = new Date((hoje.getTime() + 16 * milissegundos_por_dia));
             
-            if (dataDelito <= expirado) {
+            if (dataDelito === expirado) {
                 await delitosRepository.remove(delito);
             }
         });

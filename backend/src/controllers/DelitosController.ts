@@ -64,26 +64,21 @@ export default {
     async remove(request: Request, response: Response) {
 
         const delitosRepository = getRepository(Delito);
-
         const delitos = await delitosRepository.find();
 
-        
-        
+        let hoje = new Date();
+        let strData = (hoje.getFullYear().toString() + '-' + (hoje.getMonth()).toString() + '-' + hoje.getDate().toString());
+        let partesData = strData.split("-");
+        let milissegundos_por_dia = 1000 * 60 * 60 * 24;
+        let expirado = new Date((hoje.getTime() - 15 * milissegundos_por_dia));
+
+        hoje = new Date(parseInt(partesData[0]), parseInt(partesData[1]), parseInt(partesData[2]));
+
         delitos.forEach(async delito => {
             let partesData = delito.data.split("-");
-            let dataDelito = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) -1), parseInt(partesData[0]));
-
-            let hoje = new Date();
-
-            let strData = (hoje.getFullYear().toString() + '-' + (hoje.getMonth() + 1).toString() + '-' + hoje.getDate().toString());
-            partesData = strData.split("-");
-
-            hoje = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) -1), parseInt(partesData[0]));
-    
-            let milissegundos_por_dia = 1000 * 60 * 60 * 24;
-            let expirado = new Date((hoje.getTime() + 16 * milissegundos_por_dia));
+            let dataDelito = new Date(parseInt(partesData[0]), (parseInt(partesData[1]) -1), parseInt(partesData[2]));
             
-            if (dataDelito === expirado) {
+            if (dataDelito <= expirado) {
                 await delitosRepository.remove(delito);
             }
         });

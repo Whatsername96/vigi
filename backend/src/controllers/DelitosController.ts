@@ -71,11 +71,12 @@ export default {
         
         delitos.forEach(async delito => {
             let partesData = delito.data.split("-");
-            let dataDelito = new Date(partesData[2] + '-' + (parseInt(partesData[1]) -1).toString() + '-' + partesData[0] );
+            let dataDelito = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) -1), parseInt(partesData[0]));
            
-            let strData = (hoje.getFullYear() + '-' + (hoje.getMonth() + 1).toString() + '-' + hoje.getDate().toString());
+            let strData = (hoje.getFullYear().toString() + '-' + (hoje.getMonth() + 1).toString() + '-' + hoje.getDate().toString());
+            partesData = strData.split("-");
 
-            hoje = new Date(strData);
+            hoje = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) -1), parseInt(partesData[0]));
     
             let milissegundos_por_dia = 1000 * 60 * 60 * 24;
             let expirado = new Date((hoje.getTime() + 16 * milissegundos_por_dia));

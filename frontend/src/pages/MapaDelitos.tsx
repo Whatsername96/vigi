@@ -19,12 +19,12 @@ const markerImages = [
     require('../images/invasao-domicilio/invasao-domicilio.png'),
     require('../images/lesao-corporal/lesao-corporal.png'),
     require('../images/maus-tratos-animais/maus-tratos-animais.png'),
+    require('../images/outros/outros.png'),
     require('../images/roubo/roubo.png'),
     require('../images/sequestro/sequestro.png'),
     require('../images/trafico/trafico.png'),
     require('../images/usuarios-drogas/usuarios-drogas.png'),
     require('../images/vandalismo/vandalismo.png'),
-    require('../images/outros/outros.png'),
 ];
 
 import ModalApp from '../components/ModalApp';
@@ -51,12 +51,19 @@ export default function MapaDelitos() {
     const [delitos, setDelitos] = useState<Delito[]>([]);
     const navigation = useNavigation();
 
-    useEffect(() => {
-        api.delete('delitos');
-        api.get('delitos').then(response => {
+   useEffect(() => {
+       async function carregarLista(){
+        await api.delete('delitos');
+        await api.get('delitos').then(response => {
             setDelitos(response.data);
         });
+    }
+    navigation.addListener('focus', () => {
+        carregarLista();
         
+
+      });
+        console.log('chamou o useEffect');
     }, []);
 
     function formatarData(data: string) {
@@ -150,7 +157,10 @@ export default function MapaDelitos() {
                         >
                             <Callout tooltip={true}>
                                 <View style={styles.calloutContainer}>
-                                    <Text style={styles.calloutTitle}>{delito.tipo_delito}</Text>
+                                    { delito.tipo_delito === 'Outros' 
+                                    ? <Text style={styles.calloutTitle}>{delito.descricao}</Text>
+                                    : <Text style={styles.calloutTitle}>{delito.tipo_delito}</Text>
+                                    }
                                     <Text style={styles.calloutText}>{data} - {delito.hora}</Text>
                                 </View>
                             </Callout>

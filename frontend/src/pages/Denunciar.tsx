@@ -4,6 +4,7 @@ import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
+//Usar Calendar picker - https://www.npmjs.com/package/react-native-calendar-picker
 
 import ModalApp from '../components/ModalApp';
 import api from '../services/api';
@@ -70,8 +71,8 @@ export default function Denunciar() {
         return (hour + minutes);
     }
 
-    function hideShowInputOutros(item: any) {
-        if (item.value === 'Outros') {
+    function hideShowInputOutros(value: string) {
+        if (value === 'Outros') {
             setInputVisible(true);
         } else {
             setInputVisible(false);
@@ -193,7 +194,7 @@ export default function Denunciar() {
                         itemStyle={styles.itemsPicker}
                         labelStyle={styles.labelPicker}
                         dropDownStyle={styles.dropDownPicker}
-                        onChangeItem={(item, index) => { setSelectedValue(item.label);; setSelectedIndex(item.value); hideShowInputOutros(item) }}
+                        onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); hideShowInputOutros(item.label) }}
                     />
 
                 </View>

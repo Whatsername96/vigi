@@ -67,18 +67,24 @@ export default {
 
         const delitos = await delitosRepository.find();
 
+        let hoje = new Date();
+        
         delitos.forEach(async delito => {
             let partesData = delito.data.split("-");
-            let date = new Date(parseInt(partesData[2]),
-                (parseInt(partesData[1]) - 1),
-                parseInt(partesData[0]));
+            let dataDelito = new Date(partesData[2] + '-' + (parseInt(partesData[1]) -1).toString() + '-' + partesData[0] );
+           
+            let strData = (hoje.getFullYear() + '-' + (hoje.getMonth() + 1).toString() + '-' + hoje.getDate().toString());
 
-            let expirado = new Date();
-            expirado.setDate(expirado.getDate() - 15);
-            if (date < expirado) {
+            hoje = new Date(strData);
+    
+            let milissegundos_por_dia = 1000 * 60 * 60 * 24;
+            let expirado = new Date((hoje.getTime() + 16 * milissegundos_por_dia));
+            
+            if (dataDelito <= expirado) {
                 await delitosRepository.remove(delito);
             }
         });
+
         return response.status(200).json({message: 'Registros expirados excluídos'});
     }
 }

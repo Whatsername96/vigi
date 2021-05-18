@@ -8,5 +8,6 @@ let upload = multer();
 
 routes.get('/delitos', DelitosController.index);
 routes.post('/delitos', upload.fields([]) ,DelitosController.create);
+routes.delete('/delitos', DelitosController.remove);
 
  export default routes;

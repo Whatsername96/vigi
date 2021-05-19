@@ -66,16 +66,6 @@ export default function MapaDelitos() {
         console.log('chamou o useEffect');
     }, []);
 
-    function formatarData(data: string) {
-        let arrayData;
-        let dia, mes, ano;
-        arrayData = data.split('-');
-        dia = arrayData[2]; 
-        mes = arrayData[1]; 
-        ano = arrayData[0];
-        return (dia + '/'+ mes + '/' + ano);
-    }
-
     async function getLocationAsync() {
         let status = Permission.askAsync(Permission.LOCATION);
         if ((await status).status !== 'granted') {
@@ -145,7 +135,6 @@ export default function MapaDelitos() {
             >
 
                 {delitos.map(delito => {
-                    let data = formatarData(delito.data);
                     return (
                         <Marker
                             key={delito.id}
@@ -161,7 +150,7 @@ export default function MapaDelitos() {
                                     ? <Text style={styles.calloutTitle}>{delito.descricao}</Text>
                                     : <Text style={styles.calloutTitle}>{delito.tipo_delito}</Text>
                                     }
-                                    <Text style={styles.calloutText}>{data} - {delito.hora}</Text>
+                                    <Text style={styles.calloutText}>{delito.data} - {delito.hora}</Text>
                                 </View>
                             </Callout>
                         </Marker>

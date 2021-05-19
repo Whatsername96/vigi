@@ -4,7 +4,8 @@ import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
-//Usar Calendar picker - https://www.npmjs.com/package/react-native-calendar-picker
+//import TimePicker from 'react-time-picker';
+//import DatePicker from 'react-native-calendar-picker';
 
 import ModalApp from '../components/ModalApp';
 import api from '../services/api';
@@ -24,6 +25,7 @@ export default function Denunciar() {
 
     const route = useRoute<RouteProp<ParamList, 'Denunciar'>>();
     const [modal, setModal] = useState(false);
+    const [disable, setDisable] = useState(false);
     const [date, setDate] = useState(getDate());
     const [time, setTime] = useState(getTime());
     const { end, lat, lng } = route.params;
@@ -71,6 +73,78 @@ export default function Denunciar() {
         return (hour + minutes);
     }
 
+    function validarData(data: string) {
+        let partesData = data.split('-');
+        let erro = false;
+        let dia = new Date();
+
+        if (parseInt(partesData[0]) <= 0 && parseInt(partesData[0]) > 31) {
+            erro = true;
+        }
+        if (parseInt(partesData[1]) <= 0 || parseInt(partesData[1]) > 12) {
+            erro = true;
+        }
+        if (dia.getMonth() == 2) {
+            if (parseInt(partesData[0]) > 29) {
+                erro = true;
+            } else {
+                if (dia.getFullYear() % 4 != 0 && dia.getFullYear() % 100 != 0) {
+                    if (parseInt(partesData[0]) == 29) {
+                        erro = true;
+                    }
+                }
+            }
+        }
+        if (parseInt(partesData[2]) <= 0 || parseInt(partesData[2]) > dia.getFullYear()) {
+            erro = true;
+        }
+
+        if (parseInt(partesData[1]) != 1 &&
+            parseInt(partesData[1]) != 3 &&
+            parseInt(partesData[1]) != 5 &&
+            parseInt(partesData[1]) != 7 &&
+            parseInt(partesData[1]) != 8 &&
+            parseInt(partesData[1]) != 10 &&
+            parseInt(partesData[1]) != 12) {
+            if (parseInt(partesData[0]) == 31) {
+                erro = true;
+            }
+        }
+
+        let hoje = new Date(dia.getDate(), dia.getMonth() + 1, dia.getFullYear());
+        let dataDelito = new Date(parseInt(partesData[2]), parseInt(partesData[1]), parseInt(partesData[0]));
+        let milissegundos_por_dia = 1000 * 60 * 60 * 24;
+        let expirado = new Date((hoje.getTime() - 15 * milissegundos_por_dia));
+
+        if (dataDelito <= expirado) {
+            erro = true;
+        }
+
+        if (erro) {
+            ToastAndroid.show('Data inválida', ToastAndroid.SHORT);
+            return erro;
+        }
+    }
+
+    function validarHora(hora: string) {
+        let partesHora = hora.split(':');
+        let erro = false;
+
+        if (parseInt(partesHora[0]) < 0 && parseInt(partesHora[0]) > 23) {
+            erro = true;
+        }
+
+        if (parseInt(partesHora[1]) < 0 && parseInt(partesHora[1]) > 59) {
+            erro = true;
+        }
+
+        if (erro) {
+            ToastAndroid.show('Hora inválida', ToastAndroid.SHORT);
+            return erro;
+        }
+
+    }
+
     function hideShowInputOutros(value: string) {
         if (value === 'Outros') {
             setInputVisible(true);
@@ -80,37 +154,36 @@ export default function Denunciar() {
         }
     }
 
-    function formatarData(date: string) {
-        let arrayData;
-        let dia, mes, ano;
-        arrayData = date.split('/');
-        dia = arrayData[0];
-        mes = arrayData[1];
-        ano = arrayData[2];
-        return (ano + '-' + mes + '-' + dia);
-    }
-
     async function cadastrarDelito() {
-        const data = new FormData();
 
-        let dataFormatada = formatarData(date);
-        if (selectedValue == 'Selecione o tipo de crime' || date == '' || time == '') {
-            return ToastAndroid.show('Preencha todos os campos para salvar', ToastAndroid.SHORT);
+        let validadorData = validarData(date);
+        let validadorHora = validarHora(time);
 
+        if (validadorHora || validadorData) {
+            return ToastAndroid.show('Há dados inválidos no formulário, verifique', ToastAndroid.SHORT);
+                
         } else {
-            data.append('tipo_delito', selectedValue);
-            data.append('data', dataFormatada);
-            data.append('hora', time);
-            data.append('latitude', String(lat));
-            data.append('longitude', String(lng));
-            data.append('descricao', valueOutros);
-            data.append('index', String(selectedIndex));
 
-            await api.post('delitos', data).then((response) => {
-                setStatus(response.status.toString()); // Retorna o status 201 se deu certo
-            });
+            const data = new FormData();
 
-            setModal(true);
+            if (selectedValue == 'Selecione o tipo de crime' || date == '' || time == '') {
+                return ToastAndroid.show('Preencha todos os campos para salvar', ToastAndroid.SHORT);
+
+            } else {
+                data.append('tipo_delito', selectedValue);
+                data.append('data', date);
+                data.append('hora', time);
+                data.append('latitude', String(lat));
+                data.append('longitude', String(lng));
+                data.append('descricao', valueOutros);
+                data.append('index', String(selectedIndex));
+
+                await api.post('delitos', data).then((response) => {
+                    setStatus(response.status.toString()); // Retorna o status 201 se deu certo
+                });
+
+                setModal(true);
+            }
         }
     }
 
@@ -150,6 +223,7 @@ export default function Denunciar() {
                         maxLength={10}
                         value={date}
                         onChangeText={text => { setDate(text) }}
+                        onBlur={() => validarData(date)}
                     />
                     <Text style={styles.textDateTime}>Hora:</Text>
                     <TextInputMask
@@ -163,6 +237,7 @@ export default function Denunciar() {
                         maxLength={6}
                         value={time}
                         onChangeText={text => { setTime(text) }}
+                        onBlur={() => validarHora}
                     />
 
                 </View>
@@ -212,7 +287,9 @@ export default function Denunciar() {
 
                 <View style={styles.containerButtons}>
 
-                    <RectButton style={styles.btnDenounce} onPress={cadastrarDelito} >
+                    <RectButton style={disable == false ? styles.btnSaveAble : styles.btnSaveDisable}
+                        onPress={() => { disable == false && cadastrarDelito() && setDisable(true) }}
+                    >
                         <Text style={styles.btnText}>Salvar</Text>
                     </RectButton>
 
@@ -406,10 +483,20 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
 
-    btnDenounce: {
+    btnSaveAble: {
         width: '100%',
         height: 60,
         backgroundColor: '#000',
+        borderRadius: 6,
+        justifyContent: 'center',
+        elevation: 5,
+    },
+
+    btnSaveDisable: {
+        width: '100%',
+        height: 60,
+        backgroundColor: '#000',
+        opacity: 0.5,
         borderRadius: 6,
         justifyContent: 'center',
         elevation: 5,

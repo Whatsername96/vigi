@@ -1,5 +1,7 @@
 import React from 'react';
 import { useFonts, Abel_400Regular } from '@expo-google-fonts/abel';
+import AppLoading from 'expo-app-loading';
+
 import Routes from './src/routes'
 
 export default function App() {
@@ -9,7 +11,9 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return null;
+    return (
+      <AppLoading />
+    );
   }
   return (
     <Routes />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform, ToastAndroid, KeyboardAvoidingView } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
@@ -189,138 +189,140 @@ export default function Denunciar() {
 
     return (
         <ScrollView>
+            <KeyboardAvoidingView
+                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+                >
+                <View style={styles.container}>
 
-            <View style={styles.container}>
+                    <View style={styles.viewTitle}>
+                        <Text style={styles.textTitle}>Faça sua denúncia</Text>
+                    </View>
 
-                <View style={styles.viewTitle}>
-                    <Text style={styles.textTitle}>Faça sua denúncia</Text>
-                </View>
+                    <View style={styles.viewInfoLocal}>
+                        <Text style={styles.textInfoLocal}>Local selecionado do mapa: </Text>
+                    </View>
 
-                <View style={styles.viewInfoLocal}>
-                    <Text style={styles.textInfoLocal}>Local selecionado do mapa: </Text>
-                </View>
-
-                <View style={styles.viewInputLocal}>
-                    <TextInput
-                        style={styles.textInputLocal}
-                        editable={false}
-                        value={end}
-                        multiline
-                    />
-                </View>
-
-                <View style={styles.viewDateTime}>
-
-                    <Text style={styles.textDateTime}>Data:</Text>
-                    <TextInputMask
-                        placeholder={'__/__/___'}
-                        type={'datetime'}
-                        options={{
-                            format: 'DD/MM/YYYY'
-                        }}
-                        style={styles.inputDate}
-                        keyboardType={'number-pad'}
-                        maxLength={10}
-                        value={date}
-                        onChangeText={text => { setDate(text) }}
-                        onBlur={() => validarData(date)}
-                    />
-                    <Text style={styles.textDateTime}>Hora:</Text>
-                    <TextInputMask
-                        placeholder={'--:--'}
-                        type={'datetime'}
-                        options={{
-                            format: 'HH:MM'
-                        }}
-                        style={styles.inputTime}
-                        keyboardType={'number-pad'}
-                        maxLength={6}
-                        value={time}
-                        onChangeText={text => { setTime(text) }}
-                        onBlur={() => validarHora}
-                    />
-
-                </View>
-
-                <View style={styles.viewPicker}>
-
-                    <DropDownPicker
-                        placeholder={'Selecione um tipo de delito...'}
-                        placeholderStyle={styles.pickerPlaceholder}
-                        items={[
-                            { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
-                            { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
-                            { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
-                            { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
-                            { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
-                            { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
-                            { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
-                            { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
-                            { label: 'Outros', value: 8, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
-                            { label: 'Roubo', value: 9, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
-                            { label: 'Sequestro', value: 10, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
-                            { label: 'Tráfico', value: 11, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
-                            { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
-                            { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
-                        ]}
-                        defaultValue={''}
-                        containerStyle={styles.containerPicker}
-                        style={styles.picker}
-                        itemStyle={styles.itemsPicker}
-                        labelStyle={styles.labelPicker}
-                        dropDownStyle={styles.dropDownPicker}
-                        onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); hideShowInputOutros(item.label) }}
-                    />
-
-                </View>
-                {inputVisible && selectedValue === 'Outros' &&
-
-                    <View style={styles.viewOutros}>
+                    <View style={styles.viewInputLocal}>
                         <TextInput
-                            style={styles.textInputOutros}
-                            placeholder={'Qual o crime?'}
-                            value={valueOutros}
-                            onChangeText={text => { setValueOutros(text) }}
+                            style={styles.textInputLocal}
+                            editable={false}
+                            value={end}
+                            multiline
                         />
                     </View>
-                }
 
-                <View style={styles.containerButtons}>
+                    <View style={styles.viewDateTime}>
 
-                    <RectButton style={disable == false ? styles.btnSaveAble : styles.btnSaveDisable}
-                        onPress={() => { disable == false && cadastrarDelito() && setDisable(true) }}
-                    >
-                        <Text style={styles.btnText}>Salvar</Text>
-                    </RectButton>
+                        <Text style={styles.textDateTime}>Data:</Text>
+                        <TextInputMask
+                            placeholder={'__/__/___'}
+                            type={'datetime'}
+                            options={{
+                                format: 'DD/MM/YYYY'
+                            }}
+                            style={styles.inputDate}
+                            keyboardType={'number-pad'}
+                            maxLength={10}
+                            value={date}
+                            onChangeText={text => { setDate(text) }}
+                            onBlur={() => validarData(date)}
+                        />
+                        <Text style={styles.textDateTime}>Hora:</Text>
+                        <TextInputMask
+                            placeholder={'--:--'}
+                            type={'datetime'}
+                            options={{
+                                format: 'HH:MM'
+                            }}
+                            style={styles.inputTime}
+                            keyboardType={'number-pad'}
+                            maxLength={6}
+                            value={time}
+                            onChangeText={text => { setTime(text) }}
+                            onBlur={() => validarHora}
+                        />
+
+                    </View>
+
+                    <View style={styles.viewPicker}>
+
+                        <DropDownPicker
+                            placeholder={'Selecione um tipo de delito...'}
+                            placeholderStyle={styles.pickerPlaceholder}
+                            items={[
+                                { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
+                                { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
+                                { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
+                                { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
+                                { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
+                                { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
+                                { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
+                                { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
+                                { label: 'Outros', value: 8, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
+                                { label: 'Roubo', value: 9, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
+                                { label: 'Sequestro', value: 10, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
+                                { label: 'Tráfico', value: 11, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
+                                { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
+                                { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
+                            ]}
+                            defaultValue={''}
+                            containerStyle={styles.containerPicker}
+                            style={styles.picker}
+                            itemStyle={styles.itemsPicker}
+                            labelStyle={styles.labelPicker}
+                            dropDownStyle={styles.dropDownPicker}
+                            onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); hideShowInputOutros(item.label) }}
+                        />
+
+                    </View>
+                    {inputVisible && selectedValue === 'Outros' &&
+
+                        <View style={styles.viewOutros}>
+                            <TextInput
+                                style={styles.textInputOutros}
+                                placeholder={'Qual o crime?'}
+                                value={valueOutros}
+                                onChangeText={text => { setValueOutros(text) }}
+                            />
+                        </View>
+                    }
+
+                    <View style={styles.containerButtons}>
+
+                        <RectButton style={disable == false ? styles.btnSaveAble : styles.btnSaveDisable}
+                            onPress={() => { disable == false && cadastrarDelito() && setDisable(true) }}
+                        >
+                            <Text style={styles.btnText}>Salvar</Text>
+                        </RectButton>
+
+                    </View>
+
+                    {status === '201' ?
+                        <ModalApp
+                            show={modal}
+                            close={() => setModal(false)}
+                            title={undefined}
+                            description={'Denúncia feita com sucesso.'}
+                            imgSuccess={true}
+                            imgError={false}
+                            btnBack={false}
+                            route={'MapaDelitos'}
+                        />
+                        :
+                        <ModalApp
+                            show={modal}
+                            close={() => setModal(false)}
+                            title={undefined}
+                            description={'Ocorreu um erro.'}
+                            imgSuccess={false}
+                            imgError={true}
+                            btnBack={true}
+                            route={'MapaDelitos'}
+                        />
+                    }
 
                 </View>
-
-                {status === '201' ?
-                    <ModalApp
-                        show={modal}
-                        close={() => setModal(false)}
-                        title={undefined}
-                        description={'Denúncia feita com sucesso.'}
-                        imgSuccess={true}
-                        imgError={false}
-                        btnBack={false}
-                        route={'MapaDelitos'}
-                    />
-                    :
-                    <ModalApp
-                        show={modal}
-                        close={() => setModal(false)}
-                        title={undefined}
-                        description={'Ocorreu um erro.'}
-                        imgSuccess={false}
-                        imgError={true}
-                        btnBack={true}
-                        route={'MapaDelitos'}
-                    />
-                }
-
-            </View>
-
+            </KeyboardAvoidingView>
         </ScrollView>
     );
 }

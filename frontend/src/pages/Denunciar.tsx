@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform, ToastAndroid, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TextInput, NativeModules, Platform, ToastAndroid, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text'
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
@@ -11,7 +11,11 @@ import ModalApp from '../components/ModalApp';
 import api from '../services/api';
 
 const { StatusBarManager } = NativeModules;
+
 const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+const screenHeight = Dimensions.get('screen').height;
+const windowHeight = Dimensions.get('window').height;
+const navbarHeight = screenHeight - windowHeight + alturaStatusBar;
 
 type ParamList = {
     Denunciar: {
@@ -74,11 +78,14 @@ export default function Denunciar() {
     }
 
     function validarData(data: string) {
-        let partesData = data.split('-');
+        let partesData = data.split('/');
         let erro = false;
         let dia = new Date();
 
-        if (parseInt(partesData[0]) <= 0 && parseInt(partesData[0]) > 31) {
+        if (partesData.length == 0) {
+            erro = true;
+        }
+        if (parseInt(partesData[0]) <= 0 || parseInt(partesData[0]) > 31) {
             erro = true;
         }
         if (parseInt(partesData[1]) <= 0 || parseInt(partesData[1]) > 12) {
@@ -95,6 +102,7 @@ export default function Denunciar() {
                 }
             }
         }
+        
         if (parseInt(partesData[2]) <= 0 || parseInt(partesData[2]) > dia.getFullYear()) {
             erro = true;
         }
@@ -129,12 +137,16 @@ export default function Denunciar() {
     function validarHora(hora: string) {
         let partesHora = hora.split(':');
         let erro = false;
-
-        if (parseInt(partesHora[0]) < 0 && parseInt(partesHora[0]) > 23) {
+        console.log(partesHora[1]);
+        if (partesHora.length == 0) {
             erro = true;
         }
 
-        if (parseInt(partesHora[1]) < 0 && parseInt(partesHora[1]) > 59) {
+        if (parseInt(partesHora[0]) < 0 || parseInt(partesHora[0]) > 23) {
+            erro = true;
+        }
+
+        if (parseInt(partesHora[1]) < 0 || parseInt(partesHora[1]) > 59) {
             erro = true;
         }
 
@@ -160,13 +172,15 @@ export default function Denunciar() {
         let validadorHora = validarHora(time);
 
         if (validadorHora || validadorData) {
+            setDisable(false);
             return ToastAndroid.show('Há dados inválidos no formulário, verifique', ToastAndroid.SHORT);
-                
+
         } else {
 
             const data = new FormData();
 
             if (selectedValue == 'Selecione o tipo de crime' || date == '' || time == '') {
+                setDisable(false);
                 return ToastAndroid.show('Preencha todos os campos para salvar', ToastAndroid.SHORT);
 
             } else {
@@ -188,12 +202,12 @@ export default function Denunciar() {
     }
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-                >
-                <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={'height'}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
+                <View style={styles.container}>
                     <View style={styles.viewTitle}>
                         <Text style={styles.textTitle}>Faça sua denúncia</Text>
                     </View>
@@ -224,7 +238,7 @@ export default function Denunciar() {
                             keyboardType={'number-pad'}
                             maxLength={10}
                             value={date}
-                            onChangeText={text => { setDate(text) }}
+                            onChangeText={(text) => { setDate(text); setDisable(false) }}
                             onBlur={() => validarData(date)}
                         />
                         <Text style={styles.textDateTime}>Hora:</Text>
@@ -238,7 +252,7 @@ export default function Denunciar() {
                             keyboardType={'number-pad'}
                             maxLength={6}
                             value={time}
-                            onChangeText={text => { setTime(text) }}
+                            onChangeText={(text) => { setTime(text); setDisable(false) }}
                             onBlur={() => validarHora}
                         />
 
@@ -271,7 +285,7 @@ export default function Denunciar() {
                             itemStyle={styles.itemsPicker}
                             labelStyle={styles.labelPicker}
                             dropDownStyle={styles.dropDownPicker}
-                            onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); hideShowInputOutros(item.label) }}
+                            onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); setDisable(false); hideShowInputOutros(item.label) }}
                         />
 
                     </View>
@@ -320,10 +334,10 @@ export default function Denunciar() {
                             route={'MapaDelitos'}
                         />
                     }
+                    </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
 
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView>
     );
 }
 
@@ -331,13 +345,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#EFEEEE',
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height - alturaStatusBar,
+        height: Dimensions.get('window').height,
     },
 
     viewTitle: {
         alignItems: 'center',
-        marginTop: 60,
-        marginBottom: 60,
+        marginTop: 40,
+        marginBottom: 40,
     },
 
     textTitle: {

@@ -52,7 +52,7 @@ export default function AppModal({
 
               <Pressable
                 style={styles.modalButton}
-                onPress={() => { close(!modal); { navigation.navigate(route) } }} //colocar função para alterar a tela aqui -> route
+                onPress={() => { close(!modal); { navigation.navigate(route) } }}
               >
                 <Text style={styles.modalButtonText}>Ok</Text>
               </Pressable>

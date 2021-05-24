@@ -10,12 +10,12 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import ModalApp from '../components/ModalApp';
 import api from '../services/api';
 
-const { StatusBarManager } = NativeModules;
+// const { StatusBarManager } = NativeModules;
 
-const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
-const screenHeight = Dimensions.get('screen').height;
-const windowHeight = Dimensions.get('window').height;
-const navbarHeight = screenHeight - windowHeight + alturaStatusBar;
+// const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+// const screenHeight = Dimensions.get('screen').height;
+// const windowHeight = Dimensions.get('window').height;
+// const navbarHeight = screenHeight - windowHeight + alturaStatusBar;
 
 type ParamList = {
     Denunciar: {
@@ -81,8 +81,7 @@ export default function Denunciar() {
         let partesData = data.split('/');
         let erro = false;
         let dia = new Date();
-
-        if (partesData.length == 0) {
+        if (partesData.length < 3) {
             erro = true;
         }
         if (parseInt(partesData[0]) <= 0 || parseInt(partesData[0]) > 31) {
@@ -91,7 +90,10 @@ export default function Denunciar() {
         if (parseInt(partesData[1]) <= 0 || parseInt(partesData[1]) > 12) {
             erro = true;
         }
-        if (dia.getMonth() == 2) {
+        if(parseInt(partesData[2]) <= 0){
+            erro = true;
+        }
+        if (parseInt(partesData[1]) == 2) {
             if (parseInt(partesData[0]) > 29) {
                 erro = true;
             } else {
@@ -103,7 +105,7 @@ export default function Denunciar() {
             }
         }
         
-        if (parseInt(partesData[2]) <= 0 || parseInt(partesData[2]) > dia.getFullYear()) {
+        if (parseInt(partesData[0]) > dia.getDate() || (parseInt(partesData[1]) - 1)  > dia.getMonth() || parseInt(partesData[2]) > dia.getFullYear()) {
             erro = true;
         }
 
@@ -137,7 +139,7 @@ export default function Denunciar() {
     function validarHora(hora: string) {
         let partesHora = hora.split(':');
         let erro = false;
-        console.log(partesHora[1]);
+
         if (partesHora.length == 0) {
             erro = true;
         }
@@ -253,7 +255,7 @@ export default function Denunciar() {
                             maxLength={6}
                             value={time}
                             onChangeText={(text) => { setTime(text); setDisable(false) }}
-                            onBlur={() => validarHora}
+                            onBlur={() => validarHora(time)}
                         />
 
                     </View>

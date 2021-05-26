@@ -60,7 +60,7 @@ export default function MapaDelitos() {
         }
         navigation.addListener('focus', () => {
             carregarLista();
-
+            getLocationAsync();
 
         });
     }, []);

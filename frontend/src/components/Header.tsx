@@ -1,7 +1,9 @@
 import React from 'react';
 //import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BorderlessButton } from 'react-native-gesture-handler';
-import { StyleSheet, Text, View, Image, NativeModules, Platform, Dimensions, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, NativeModules, Platform, Dimensions } from 'react-native';
+
+import { StatusBar } from 'expo-status-bar';
 
 import Back from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +30,7 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
         <View style={styles.container}>
 
             <StatusBar
-                barStyle="light-content"
+                style="light"
                 hidden={false}
                 backgroundColor="#394867"
                 translucent={false}

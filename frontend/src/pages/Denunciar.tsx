@@ -94,7 +94,7 @@ export default function Denunciar() {
         if (parseInt(partesData[1]) - 1 <= 0 || parseInt(partesData[1]) > 12) {
             erro = true;
         }
-        if (parseInt(partesData[2]) <= 0) {
+        if (parseInt(partesData[2]) <= 0 || parseInt(partesData[2]) > dia.getFullYear()) {
             erro = true;
         }
         if (parseInt(partesData[1]) - 1 == 2) {

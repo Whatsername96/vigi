@@ -78,10 +78,8 @@ export default {
 
             let diaAtual = new Date();
             let hoje = new Date(diaAtual.getFullYear(), (diaAtual.getMonth()), diaAtual.getDate());
-            console.log('hoje: '+ hoje);
             let milissegundos_por_dia = 1000 * 60 * 60 * 24;
             let expirado = new Date((hoje.getTime() - 15 * milissegundos_por_dia));
-            console.log('expirado: '+ expirado);
 
        
             delitos.forEach(async delito => {
@@ -89,7 +87,6 @@ export default {
                 let dataDelito = new Date(parseInt(partesData[2]), (parseInt(partesData[1]) - 1), parseInt(partesData[0]));
 
                 if (dataDelito <= expirado) {
-                    console.log(delito);
                     await delitosRepository.remove(delito);
                 }
             });

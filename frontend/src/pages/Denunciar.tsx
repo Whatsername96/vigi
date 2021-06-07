@@ -64,7 +64,7 @@ export default function Denunciar() {
     }
 
     function getTime() {
-        var now = new Date();
+        let now = new Date();
         let hour;
         let minutes;
 
@@ -138,8 +138,10 @@ export default function Denunciar() {
         }
     }
 
-    function validarHora(hora: string) {
+    function validarHora(data: string, hora: string) {
+        let partesData = data.split('/');
         let partesHora = hora.split(':');
+        let now = new Date();
         let erro = false;
 
         if (partesHora.length == 0) {
@@ -152,6 +154,21 @@ export default function Denunciar() {
 
         if (parseInt(partesHora[1]) < 0 || parseInt(partesHora[1]) > 59) {
             erro = true;
+        }
+
+        
+        if (parseInt(partesData[2]) == now.getUTCFullYear() &&
+         parseInt(partesData[1]) - 1 == now.getMonth() && 
+         parseInt(partesData[0]) == now.getDate()) {
+            if (parseInt(partesHora[0]) >= now.getHours() &&
+             parseInt(partesHora[1]) > now.getMinutes()) {
+                erro = true;
+            } else {
+                if (parseInt(partesHora[0]) <= now.getHours() &&
+                 parseInt(partesHora[1]) < now.getMinutes()) {
+                    erro = true;
+                }
+            }
         }
 
         if (erro) {
@@ -173,7 +190,7 @@ export default function Denunciar() {
     async function cadastrarDelito() {
 
         let validadorData = validarData(date);
-        let validadorHora = validarHora(time);
+        let validadorHora = validarHora(date, time);
 
         if (validadorHora || validadorData) {
             setDisable(false);
@@ -259,7 +276,7 @@ export default function Denunciar() {
                                 maxLength={6}
                                 value={time}
                                 onChangeText={(text) => { setTime(text); setDisable(false) }}
-                                onBlur={() => validarHora(time)}
+                                onBlur={() => validarHora(date, time)}
                             />
 
                         </View>

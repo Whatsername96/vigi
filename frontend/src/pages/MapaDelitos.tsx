@@ -120,7 +120,7 @@ export default function MapaDelitos() {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-
+           
                 <MapView
                     showsUserLocation={true}
                     followsUserLocation={true}

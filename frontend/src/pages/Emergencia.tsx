@@ -8,7 +8,7 @@ export default function Emergencia() {
     return (
         <ScrollView>
             <View style={styles.container}>
-
+                
                 <RectButton style={styles.botaoEmergencia} onPress={() => {
                     {Linking.openURL('content://com.android.contacts/contacts')}}}>
                     <View style={styles.viewAgenda}>

@@ -122,14 +122,12 @@ export default function Denunciar() {
             parseInt(partesData[1]) != 12) {
             if (parseInt(partesData[0]) == 31) {
                 erro = true;
-                console.log(parseInt(partesData[1]) - 1);
             }
         }
         let hoje = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate());
         let dataDelito = new Date(parseInt(partesData[2]), parseInt(partesData[1]) - 1, parseInt(partesData[0]));
         let milissegundos_por_dia = 1000 * 60 * 60 * 24;
         let expirado = new Date((hoje.getTime() - 15 * milissegundos_por_dia));
-        console.log(dataDelito);
         if (dataDelito <= expirado) {
             erro = true;
         }

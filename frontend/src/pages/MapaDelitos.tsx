@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, Image, ToastAndroid, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, 
+        Text, 
+        View, 
+        Dimensions, 
+        Image, 
+        ToastAndroid, 
+        TouchableWithoutFeedback, 
+        Keyboard } from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { RectButton } from 'react-native-gesture-handler';

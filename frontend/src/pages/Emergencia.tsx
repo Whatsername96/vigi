@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, Dimensions, ScrollView, Linking } from 'react-native';
+import { StyleSheet, 
+        View, 
+        Text, 
+        Image, 
+        Dimensions, 
+        ScrollView, 
+        Linking } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import NumerosServicos from '../components/NumerosServicos';
@@ -29,6 +35,7 @@ export default function Emergencia() {
                 <NumerosServicos servico={'Defesa Civil'} numero={'199'} />
             
             </View>
+            
         </ScrollView>
     )
 }

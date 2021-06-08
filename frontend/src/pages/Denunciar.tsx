@@ -156,18 +156,12 @@ export default function Denunciar() {
             erro = true;
         }
 
-        
         if (parseInt(partesData[2]) == now.getUTCFullYear() &&
          parseInt(partesData[1]) - 1 == now.getMonth() && 
          parseInt(partesData[0]) == now.getDate()) {
             if (parseInt(partesHora[0]) >= now.getHours() &&
              parseInt(partesHora[1]) > now.getMinutes()) {
                 erro = true;
-            } else {
-                if (parseInt(partesHora[0]) <= now.getHours() &&
-                 parseInt(partesHora[1]) < now.getMinutes()) {
-                    erro = true;
-                }
             }
         }
 

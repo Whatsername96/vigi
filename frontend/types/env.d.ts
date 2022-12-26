@@ -7,4 +7,6 @@ declare module '@env' {
     export const MESSAGING_SENDER_ID_FIREBASE: string;
     export const APP_ID_FIREBASE: string;
     export const MEASUREMENT_ID_FIREBASE: string;
+    export const MAP_BOX_PUBLIC_KEY: string;
+    export const GOOGLE_API: string;
 }

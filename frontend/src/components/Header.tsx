@@ -38,7 +38,7 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
 
             {showBack &&
                 <BorderlessButton onPress={() => { navigation.goBack() }}>
-                    <ChevronLeft size={40} color="#FFF" />
+                    <ChevronLeft width={40} height={40} color="#FFF" />
                 </BorderlessButton>
             }
 

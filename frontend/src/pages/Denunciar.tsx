@@ -20,6 +20,18 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import ModalApp from '../components/ModalApp';
 import api from '../services/api';
 
+import { db } from '../services/firebaseConnection';
+
+import {
+    addDoc,
+    collection,
+    onSnapshot,
+    query,
+    orderBy,
+    doc,
+    deleteDoc
+} from 'firebase/firestore';
+
 
 type ParamList = {
     Denunciar: {
@@ -157,10 +169,10 @@ export default function Denunciar() {
         }
 
         if (parseInt(partesData[2]) == now.getUTCFullYear() &&
-         parseInt(partesData[1]) - 1 == now.getMonth() && 
-         parseInt(partesData[0]) == now.getDate()) {
+            parseInt(partesData[1]) - 1 == now.getMonth() &&
+            parseInt(partesData[0]) == now.getDate()) {
             if (parseInt(partesHora[0]) >= now.getHours() &&
-             parseInt(partesHora[1]) > now.getMinutes()) {
+                parseInt(partesHora[1]) > now.getMinutes()) {
                 erro = true;
             }
         }
@@ -191,27 +203,42 @@ export default function Denunciar() {
             return ToastAndroid.show('Há dados inválidos no formulário, verifique', ToastAndroid.SHORT);
 
         } else {
-
-            const data = new FormData();
+            // const data = new FormData();
 
             if (selectedValue == 'Selecione o tipo de crime' || date == '' || time == '') {
                 setDisable(false);
                 return ToastAndroid.show('Preencha todos os campos para salvar', ToastAndroid.SHORT);
 
             } else {
-                data.append('tipo_delito', selectedValue);
-                data.append('data', date);
-                data.append('hora', time);
-                data.append('latitude', String(lat));
-                data.append('longitude', String(lng));
-                data.append('descricao', valueOutros);
-                data.append('index', String(selectedIndex));
+                try {
+                    await addDoc(collection(db, "crimes"), {
+                        crime_type: selectedValue,
+                        date: date,
+                        hour: time,
+                        lat: lat,
+                        lng: lng,
+                        index: selectedIndex,
+                        created_at: new Date()
+                    });
+                    setModal(true);
+                } catch (e) {
+                    console.log(e);
+                    return ToastAndroid.show('Ocorreu um erro ao cadastrar o delito.', ToastAndroid.SHORT);
+                }
+                // data.append('tipo_delito', selectedValue);
+                // data.append('data', date);
+                // data.append('hora', time);
+                // data.append('latitude', String(lat));
+                // data.append('longitude', String(lng));
+                // data.append('descricao', valueOutros);
+                // data.append('index', String(selectedIndex));
+                // data.append('created_at', new Date());
 
-                await api.post('delitos', data).then((response) => {
-                    setStatus(response.status.toString()); // Retorna o status 201 se deu certo
-                });
 
-                setModal(true);
+
+                // await api.post('delitos', data).then((response) => {
+                //     setStatus(response.status.toString()); // Retorna o status 201 se deu certo
+                // });
             }
         }
     }
@@ -321,38 +348,25 @@ export default function Denunciar() {
                         <View style={styles.containerButtons}>
 
                             <RectButton style={disable == false ? styles.btnSaveAble : styles.btnSaveDisable}
-                                onPress={() => { disable == false && cadastrarDelito() && setDisable(true) }}
+                                onPress={() => { disable == false ? cadastrarDelito() : setDisable(true) }}
                             >
                                 <Text style={styles.btnText}>Salvar</Text>
                             </RectButton>
 
                         </View>
 
-                        {status === '201' ?
-                            <ModalApp
-                                show={modal}
-                                close={() => setModal(false)}
-                                title={undefined}
-                                description={'Denúncia feita com sucesso.'}
-                                imgSuccess={true}
-                                imgError={false}
-                                btnBack={false}
-                                route={'MapaDelitos'}
-                            />
-                            :
-                            <ModalApp
-                                show={modal}
-                                close={() => setModal(false)}
-                                title={undefined}
-                                description={'Ocorreu um erro.'}
-                                imgSuccess={false}
-                                imgError={true}
-                                btnBack={true}
-                                route={'MapaDelitos'}
-                            />
-                        }
+                        <ModalApp
+                            show={modal}
+                            close={() => setModal(false)}
+                            title={undefined}
+                            description={'Denúncia feita com sucesso.'}
+                            imgSuccess={true}
+                            imgError={false}
+                            btnBack={false}
+                            route={'MapaDelitos'}
+                        />
                     </View>
-
+                    
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         </ScrollView>

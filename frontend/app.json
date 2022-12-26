@@ -26,12 +26,14 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
-    },
-    "androidNavigationBar": {
-      "visible": "sticky-immersive",
-      "barStyle": "light-content",
-      "backgroundColor": "#000"
+      },
+      "package": "com.vigi",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE"
+      ]
     },
     "androidStatusBar": {
       "hidden": false,

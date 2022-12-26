@@ -54,6 +54,7 @@ export default function Denunciar() {
     const [inputVisible, setInputVisible] = useState(false);
     const [valueOutros, setValueOutros] = useState('');
     const [status, setStatus] = useState('');
+    const [isOpenDropdown,setIsOpenDropdown] = useState(false);
 
     function getDate() {
         var today = new Date();
@@ -323,13 +324,16 @@ export default function Denunciar() {
                                     { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
                                     { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
                                 ]}
-                                defaultValue={''}
+                                open={isOpenDropdown}
+                                setOpen={setIsOpenDropdown}
+                                value={selectedIndex}
+                                multiple={false}
+                                setValue={setSelectedIndex}
                                 containerStyle={styles.containerPicker}
                                 style={styles.picker}
-                                itemStyle={styles.itemsPicker}
+                                listItemContainerStyle={styles.itemsPicker}
                                 labelStyle={styles.labelPicker}
-                                dropDownStyle={styles.dropDownPicker}
-                                onChangeItem={(item, index) => { setSelectedValue(item.label); setSelectedIndex(item.value); setDisable(false); hideShowInputOutros(item.label) }}
+                                onSelectItem={(item) => { console.log(item) }}
                             />
 
                         </View>
@@ -366,7 +370,7 @@ export default function Denunciar() {
                             route={'MapaDelitos'}
                         />
                     </View>
-                    
+
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         </ScrollView>
@@ -468,6 +472,7 @@ const styles = StyleSheet.create({
 
     containerPicker: {
         height: 60,
+        backgroundColor: '#FFF',
     },
 
     picker: {
@@ -475,10 +480,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         elevation: 5,
         width: '100%',
-    },
-
-    dropDownPicker: {
-        backgroundColor: '#FFF',
     },
 
     pickerPlaceholder: {

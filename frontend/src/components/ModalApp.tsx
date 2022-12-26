@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Modal, Image, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 interface ModalAppProps {
   show: boolean;
@@ -25,7 +25,7 @@ export default function AppModal({
 }: ModalAppProps) {
 
   const [modal, setModal] = useState(false);
-  const navigation = useNavigation();
+  const navigation =useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     setModal(show);

@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, 
-        Text, 
-        View, 
-        Dimensions, 
-        Image, 
-        ToastAndroid, 
-        TouchableWithoutFeedback, 
-        Keyboard } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Dimensions,
+    Image,
+    ToastAndroid,
+    TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { RectButton } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import * as Location from 'expo-location';
-import * as Permission from 'expo-permissions';
 
 import config from '../../config/index.json';
 
@@ -56,7 +57,8 @@ export default function MapaDelitos() {
     const [coordsLat, setCoordsLat] = useState(0);
     const [coordsLng, setCoordsLng] = useState(0);
     const [delitos, setDelitos] = useState<Delito[]>([]);
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<any>>();
+    const [status, setStatus] = useState(false);
 
     useEffect(() => {
         async function carregarLista() {
@@ -67,41 +69,54 @@ export default function MapaDelitos() {
         }
         navigation.addListener('focus', () => {
             carregarLista();
-            getLocationAsync();
-
+            requestLocationAsync();
         });
     }, []);
 
     async function getLocationAsync() {
-        let status = Permission.askAsync(Permission.LOCATION);
-        if ((await status).status !== 'granted') {
-
-            return ToastAndroid.show('Permissão negada, não é possível mostrar a sua localização', ToastAndroid.SHORT);
-
+        let { status } = await Location.getForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setStatus(false);
+            requestLocationAsync();
         } else {
-            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
-            const { latitude, longitude } = location.coords;
-
-            let street = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street ?? '');
-            let name = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name ?? '');
-            let district = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district ?? '');
-            let subregion = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion ?? '');
-            let region = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region ?? '');
-            let country = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '');
-
-            setEndereco(
-                (street.length ? street + ', ' : '') +
-                (name.length ? name + ' - ' : '') +
-                (district.length ? district + ', ' : '') +
-                (subregion.length ? subregion + ', ' : '') +
-                (region.length ? region + ' - ' : '') +
-                (country.length ? country : '')
-            );
-            setCoordsLat(latitude);
-            setCoordsLng(longitude);
-            setLatitude(latitude);
-            setLongitude(longitude);
+            setStatus(true);
         }
+    }
+
+    async function requestLocationAsync() {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setStatus(false);
+            return ToastAndroid.show('Permissão negada, não é possível mostrar a sua localização', ToastAndroid.SHORT);
+        } else {
+            setStatus(true);
+            getCurrentPostition();
+        }
+    }
+
+    async function getCurrentPostition() {
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest });
+        const { latitude, longitude } = location.coords;
+
+        let street = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.street ?? '');
+        let name = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.name ?? '');
+        let district = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.district ?? '');
+        let subregion = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.subregion ?? '');
+        let region = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.region ?? '');
+        let country = ((await Location.reverseGeocodeAsync({ latitude, longitude }))[0]?.country ?? '');
+
+        setEndereco(
+            (street.length ? street + ', ' : '') +
+            (name.length ? name + ' - ' : '') +
+            (district.length ? district + ', ' : '') +
+            (subregion.length ? subregion + ', ' : '') +
+            (region.length ? region + ' - ' : '') +
+            (country.length ? country : '')
+        );
+        setCoordsLat(latitude);
+        setCoordsLng(longitude);
+        setLatitude(latitude);
+        setLongitude(longitude);
     }
 
     function consultarLocalizacao(coordsLat: number, coordsLng: number) {
@@ -127,7 +142,7 @@ export default function MapaDelitos() {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-           
+
                 <MapView
                     showsUserLocation={true}
                     followsUserLocation={true}

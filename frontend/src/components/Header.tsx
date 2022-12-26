@@ -5,8 +5,8 @@ import { StyleSheet, Text, View, Image, NativeModules, Platform, Dimensions } fr
 
 import { StatusBar } from 'expo-status-bar';
 
-import Back from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
+import { ChevronLeft } from "react-native-feather";
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const { StatusBarManager } = NativeModules;
 const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -19,7 +19,7 @@ interface HeaderProps {
 }
 
 export default function Header({ title, logo, showBack, showEmergency }: HeaderProps) {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<any>>();
 
     function handleNavigateToEmergencia() {
         navigation.navigate('Emergencia');
@@ -38,7 +38,7 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
 
             {showBack &&
                 <BorderlessButton onPress={() => { navigation.goBack() }}>
-                    <Back name="chevron-left" size={40} color="#FFF" />
+                    <ChevronLeft size={40} color="#FFF" />
                 </BorderlessButton>
             }
 

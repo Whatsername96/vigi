@@ -78,7 +78,9 @@ export default function MapaDelitos() {
             setStatus(false);
             requestLocationAsync();
         } else {
+            console.log('aaa')
             setStatus(true);
+            getCurrentPostition();
         }
     }
 
@@ -90,6 +92,14 @@ export default function MapaDelitos() {
         } else {
             setStatus(true);
             getCurrentPostition();
+        }
+    }
+
+    async function checkStatusGetCurrentPosition() {
+        if(status) {
+            getCurrentPostition();
+        } else {
+            return ToastAndroid.show('Permissão negada, não é possível mostrar a sua localização', ToastAndroid.SHORT);
         }
     }
 
@@ -278,7 +288,7 @@ export default function MapaDelitos() {
                 onFail={error => console.error(error)}
             />
             <View style={styles.viewLocationUser}>
-                <RectButton onPress={() => getLocationAsync()}>
+                <RectButton onPress={() => checkStatusGetCurrentPosition()}>
                     <Image source={
                         require('../images/input/local-usuario.png')
                     } />

@@ -54,7 +54,26 @@ export default function Denunciar() {
     const [inputVisible, setInputVisible] = useState(false);
     const [valueOutros, setValueOutros] = useState('');
     const [status, setStatus] = useState('');
-    const [isOpenDropdown,setIsOpenDropdown] = useState(false);
+    const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Outros', value: 8, icon: () => <Image source={require('../images/icons-picker/outros.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Roubo', value: 9, icon: () => <Image source={require('../images/icons-picker/roubo.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Sequestro', value: 10, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Tráfico', value: 11, icon: () => <Image source={require('../images/icons-picker/trafico.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+        { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} style={styles.iconStyle} resizeMode={'contain'} /> },
+    ]);
 
     function getDate() {
         var today = new Date();
@@ -245,12 +264,14 @@ export default function Denunciar() {
     }
 
     return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <KeyboardAvoidingView
-                    behavior={'height'}
+
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView
+                behavior={'height'}
+            >
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled
                 >
                     <View style={styles.container}>
                         <View style={styles.viewTitle}>
@@ -308,33 +329,32 @@ export default function Denunciar() {
                             <DropDownPicker
                                 placeholder={'Selecione um tipo de delito...'}
                                 placeholderStyle={styles.pickerPlaceholder}
-                                items={[
-                                    { label: 'Assalto', value: 0, icon: () => <Image source={require('../images/icons-picker/assalto.png')} /> },
-                                    { label: 'Ato Obsceno', value: 1, icon: () => <Image source={require('../images/icons-picker/ato-obsceno.png')} /> },
-                                    { label: 'Disparos', value: 2, icon: () => <Image source={require('../images/icons-picker/disparos.png')} /> },
-                                    { label: 'Furto', value: 3, icon: () => <Image source={require('../images/icons-picker/furto.png')} /> },
-                                    { label: 'Homicídio', value: 4, icon: () => <Image source={require('../images/icons-picker/homicidio.png')} /> },
-                                    { label: 'Invasão de Domicílio', value: 5, icon: () => <Image source={require('../images/icons-picker/violacao-domicilio.png')} /> },
-                                    { label: 'Lesão Corporal', value: 6, icon: () => <Image source={require('../images/icons-picker/lesao-corporal.png')} /> },
-                                    { label: 'Maus Tratos', value: 7, icon: () => <Image source={require('../images/icons-picker/maus-tratos.png')} /> },
-                                    { label: 'Outros', value: 8, icon: () => <Image source={require('../images/icons-picker/outros.png')} /> },
-                                    { label: 'Roubo', value: 9, icon: () => <Image source={require('../images/icons-picker/roubo.png')} /> },
-                                    { label: 'Sequestro', value: 10, icon: () => <Image source={require('../images/icons-picker/sequestro.png')} /> },
-                                    { label: 'Tráfico', value: 11, icon: () => <Image source={require('../images/icons-picker/trafico.png')} /> },
-                                    { label: 'Usuários de Drogas', value: 12, icon: () => <Image source={require('../images/icons-picker/usuarios-drogas.png')} /> },
-                                    { label: 'Vandalismo', value: 13, icon: () => <Image source={require('../images/icons-picker/vandalismo.png')} /> },
-                                ]}
+                                open={isOpenDropdown}
+                                value={selectedIndex}
+                                items={items}
+                                setOpen={setIsOpenDropdown}
+                                setValue={setSelectedIndex}
+                                setItems={setItems}
+                                listMode={'SCROLLVIEW'}
+                                style={styles.picker}
+                                listItemContainerStyle={styles.itemsPicker}
+                                labelStyle={styles.labelPicker}
+                                listItemLabelStyle={styles.labelItem}
+                            />
+
+                            {/* <DropDownPicker
+                                placeholder={'Selecione um tipo de delito...'}
+                                placeholderStyle={styles.pickerPlaceholder}
+                                items={items}
+                                listMode={'SCROLLVIEW'}
                                 open={isOpenDropdown}
                                 setOpen={setIsOpenDropdown}
                                 value={selectedIndex}
                                 multiple={false}
                                 setValue={setSelectedIndex}
-                                containerStyle={styles.containerPicker}
-                                style={styles.picker}
-                                listItemContainerStyle={styles.itemsPicker}
-                                labelStyle={styles.labelPicker}
+                                
                                 onSelectItem={(item) => { console.log(item) }}
-                            />
+                            /> */}
 
                         </View>
                         {inputVisible && selectedValue === 'Outros' &&
@@ -370,11 +390,9 @@ export default function Denunciar() {
                             route={'MapaDelitos'}
                         />
                     </View>
-
-                </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-        </ScrollView>
-
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -470,16 +488,12 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
 
-    containerPicker: {
-        height: 60,
-        backgroundColor: '#FFF',
-    },
-
     picker: {
         backgroundColor: '#FFF',
         borderRadius: 6,
         elevation: 5,
         width: '100%',
+        height: 60,
     },
 
     pickerPlaceholder: {
@@ -489,21 +503,30 @@ const styles = StyleSheet.create({
     },
 
     itemsPicker: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
         borderWidth: 1,
         borderColor: '#D1D1D1',
-        paddingVertical: 10,
-        paddingHorizontal: 10,
+        width: '100%',
+        height: 50,
     },
 
     labelPicker: {
         justifyContent: 'center',
         fontFamily: 'Abel_400Regular',
         fontSize: 16,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
         textAlign: 'left',
+    },
+
+    labelItem: {
+        justifyContent: 'center',
+        fontFamily: 'Abel_400Regular',
+        fontSize: 16,
+        textAlign: 'left',
+    },
+
+    iconStyle: {
+        height: '90%',
+        minWidth: 50,
+        justifyContent: 'center',
     },
 
     viewOutros: {

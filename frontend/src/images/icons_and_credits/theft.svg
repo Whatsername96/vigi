@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="700pt" height="700pt" version="1.1" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+ <path d="m560 116.67c0 25.773-20.895 46.664-46.668 46.664-25.773 0-46.664-20.891-46.664-46.664 0-25.773 20.891-46.668 46.664-46.668 25.773 0 46.668 20.895 46.668 46.668"/>
+ <path transform="matrix(23.333 0 0 23.333 245 -385)" d="m9.5001 25.5-4.4001 4.8999" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+ <path d="m140 396.67c0 12.887-10.445 23.332-23.332 23.332s-23.336-10.445-23.336-23.332 10.449-23.336 23.336-23.336 23.332 10.449 23.332 23.336"/>
+ <path d="m116.67 373.33h116.67v46.668h-116.67z"/>
+ <path transform="matrix(23.333 0 0 23.333 245 -385)" d="m6.5001 39.5 1.9999-6-4.9999-4.0001" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+ <path transform="matrix(23.333 0 0 23.333 245 -385)" d="m15.5 24.5-3 3-4.0001-4.0001-9 10" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+ <path transform="matrix(23.333 0 0 23.333 245 -385)" d="m0.50006 27.5 3-4.0001" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+ <path transform="matrix(23.333 0 0 23.333 245 -385)" d="m3.5001 23.5h4.9999" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+ <path d="m366.33 329-46.664-23.332 102.66-130.67 58.336 21z"/>
+ <path d="m245 210h-116.67c-32.668 0-58.332 25.668-58.332 58.332 0 32.668 25.668 58.332 58.332 58.332 18.668 0 37.332-9.332 46.668-23.332z"/>
+</svg>

@@ -78,7 +78,6 @@ export default function MapaDelitos() {
             setStatus(false);
             requestLocationAsync();
         } else {
-            console.log('aaa')
             setStatus(true);
             getCurrentPostition();
         }

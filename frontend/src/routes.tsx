@@ -18,21 +18,21 @@ export default function Routes() {
                     name={"MapaDelitos"}
                     component={MapaDelitos}
                     options={{
-                        header: () => <Header title={'Vigi'} logo={true} showBack={false} showEmergency={true} />
+                        header: () => <Header title={'Mapa'} showBack={false} showEmergency={true} />
                     }}
                 />
                 <Screen
                     name={"Emergencia"}
                     component={Emergencia}
                     options={{
-                        header: () => <Header title={'Emergência'} logo={false} showBack={true} showEmergency={false} />
+                        header: () => <Header title={'Emergência'} showBack={true} showEmergency={false} />
                     }}
                 />
                 <Screen
                     name={"Denunciar"}
                     component={Denunciar}
                     options={{
-                        header: () => <Header title={'Denunciar'} logo={false} showBack={true} showEmergency={true} />
+                        header: () => <Header title={'Denunciar'} showBack={true} showEmergency={true} />
                     }}
                 />
             </Navigator>

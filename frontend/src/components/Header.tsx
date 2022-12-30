@@ -13,12 +13,11 @@ const alturaStatusBar = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 interface HeaderProps {
     title: string;
-    logo: boolean;
     showBack: boolean;
     showEmergency: boolean;
 }
 
-export default function Header({ title, logo, showBack, showEmergency }: HeaderProps) {
+export default function Header({ title, showBack, showEmergency }: HeaderProps) {
     const navigation = useNavigation<NavigationProp<any>>();
 
     function handleNavigateToEmergencia() {
@@ -52,10 +51,6 @@ export default function Header({ title, logo, showBack, showEmergency }: HeaderP
             }
 
             <View style={styles.containerLogo}>
-                {logo && <Image style={styles.logoImg}
-                    source={require('../images/header/logo.png')} />
-                }
-
                 <Text style={styles.title}>{title}</Text>
             </View>
 
